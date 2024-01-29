@@ -1,0 +1,331 @@
+/*Prevent substitutions in common names by defining a macro by its name.*/ 
+
+#include <De.incl>
+
+# ifdef LABEL_CND
+#   define LABEL_C
+#   define LABEL_N
+#   define LABEL_D
+# elif defined(LABEL_CN)
+#    define LABEL_C
+#    define LABEL_N
+# endif
+
+# ifdef PROXIMAL_CH
+#   ifndef PROXIMAL_C
+#     define PROXIMAL_C
+#   endif
+# elif !defined(PROXIMAL_C) && !defined(PROXIMAL_NH)
+#   define PROXIMAL_NH
+# endif
+
+# if defined(PROXIMAL_NH) && !defined(PROXIMAL_N)
+#   define PROXIMAL_N PROXIMAL_N
+# endif
+
+# if (defined(DISTAL_CH) || defined(DISTAL_CH3) || defined(DISTAL_CH1)) && !defined(DISTAL_C)
+#   define DISTAL_C DISTAL_C
+# endif
+
+# if defined(DISTAL_NH) && !defined(DISTAL_N)
+#   defined DISTAL_N DISTAL_N
+# endif
+
+# ifdef TROSY
+#   ifndef PROXIMAL_TROSY
+#     define PROXIMAL_TROSY
+#   endif
+#   ifndef PROXIMAL_NTROSY
+#     define PROXIMAL_NTROSY
+#   endif
+# endif
+
+# ifdef ECOSY
+#   undef ECOSY
+#   define PROXIMAL_ECOSY
+#   define HSQC
+# endif
+
+# if defined(HSQC) && !defined(PROXIMAL_HSQC)
+#   undef HSQC
+#   define PROXIMAL_HSQC
+# endif
+
+# if defined(PROXIMAL_HSQC) && !defined(PROXIMAL_TROSY) && !defined(PROXIMAL_ECOSY)
+#   define PROXIMAL_COS_INEPT
+# endif
+
+# ifdef HMQC
+#   undef HMQC
+#   define PROXIMAL_HMQC
+# endif
+
+
+# define plSAT pl32
+# ifdef PRESAT
+#   define SAT_ON plSAT:fH cw:fH
+#   define SAT_OFF do:fH
+# else
+#   define SAT_ON
+#   define SAT_OFF
+# endif
+
+/*For proximal NH sensitivity-enhanced HSQC is the default.*/
+# if defined(PROXIMAL_HSQC) && defined(PROXIMAL_N) && !defined(PROXIMAL_NO_SE)
+#   define PROXIMAL_HSQC_SE
+# endif
+
+# ifdef RAPID
+#   undef FB
+# endif
+
+# ifdef FB
+#   undef FB
+#   define FB FB
+#   define WATER_FLIPBACK
+# endif
+
+# ifdef GS
+#   undef GS
+#   define GS GS
+#   ifndef PROXIMAL_GS
+#     define PROXIMAL_GS
+#   endif
+# endif
+
+# ifdef SHAPED
+#   undef SHAPED
+#   define SHAPED SHAPED
+#   define _H_SHAPED
+# endif
+
+
+;cnst0: Correct to phc1=0 by entering cnst0=phc1. Added to last delay.
+define delay ME_de
+# ifdef ACQ_EXPLICIT
+    "ME_de = de - 2*dw*cnst0/360 + 0.1u + 1u" ; Added delays before DWL_CLK_ON.
+# else
+    "ME_de = de - 2*dw*cnst0/360"
+# endif
+
+
+/*Allow for separate channels for CA and CO. In case of simultaneous pulses only non-virtual channels work.*/
+# define fH f1
+# define fC f2
+# define fCA f2
+# define cpdH cpd1
+# define cpdsH cpds1
+# define cpdC cpd2
+# define cpdsC cpds2
+# define bfH bf1
+# define bfC bf2
+# define bfCA bf2
+# ifdef CACO_SPLIT
+#   define fCO f3
+#   define fN f4
+#   define fD f5
+#   define cpdN cpd4
+#   define cpdsN cpds4
+#   define cpdD cpd5
+#   define cpdsD cpds5
+#   define bfCO bf3
+#   define bfN bf4
+#   define bfD bf5
+# else
+#   define fCO f2
+#   define fN f3
+#   define cpdN cpd3
+#   define cpdsN cpds3
+#   define fD f4
+#   define cpdD cpd4
+#   define cpdsD cpds4
+#   define bfN bf3
+#   define bfD bf4
+# endif
+
+; Adjust d1 for sequence to match requested d1 relaxation time:
+"d1 -= 0"   ; Prevents spurious error message from the next line.
+"d1 -= d11"
+# if defined(PREG) || defined(PREG_END)
+    "d1 -= p16 + d16"
+# endif
+
+; ASAP turned off for now:
+# ifdef H_ASAP
+#   undef H_ASAP
+# endif
+
+# ifdef C_ASAP
+#   undef C_ASAP
+# endif
+
+# if defined(H_ASAP)
+;d30: time for H ASAP.
+;p33: H ASAP pulse length.
+    "plw58 = (p1/p33)*(p1/p33)*plw1"
+    "l21 = (d30/(p33*217.3))"
+    "d1 -= p33*217.3*l21"
+# endif
+
+# if defined(C_ASAP)
+;d31: time for C ASAP.
+;p34: C ASAP pulse length.
+    "plw59 = (p3/p34)*(p3/p34)*plw2"
+    "l22 = (d31/(p34*188.448))"
+    "d1 -= p34*188.448*l22"
+# endif
+
+/*Turn decoupling on by default for proximal heteronucleus.*/
+# if defined(PROXIMAL_C) && !defined(NO_CPD) && !defined(PROXIMAL_TROSY)
+#   define CPD_C CPD_C
+# endif
+
+# if !defined(PROXIMAL_C) && !defined(NO_CPD) && !defined(PROXIMAL_TROSY)
+#   define CPD_N CPD_N
+# endif
+
+# if defined (PROXIMAL_C) && defined(TROSY) && defined(X_BETA) && !defined(NO_TROSY_INV)
+#   define TROSY_INV
+# endif
+
+# if defined(CPD_C)
+#   define CPD_POW pl12:fC
+#   define CPD_ON cpds2:fC
+#   define CPD_ON_GO cpds2:fC finally do:fC
+#   define CPD_OFF do:fC
+# elif defined(CPD_N)
+#   define CPD_POW pl16:fN
+#   define CPD_ON cpds3:fN
+#   define CPD_ON_GO cpds3:fN finally do:fN
+#   define CPD_OFF do:fN
+# else
+#   define CPD_POW
+#   define CPD_ON
+#   define CPD_ON_GO
+#   define CPD_OFF
+# endif
+
+; H decoupling with flanking pulses, ignored in case of TROSY:
+# ifdef TROSY
+#   define DECOUPLE_H_ON
+#   define DECOUPLE_H_OFF
+#   define DECOUPLE_H_TROSY_ON
+#   define DECOUPLE_H_TROSY_OFF
+# else
+#   define DECOUPLE_H_ON (p1 ph1 pl1 0.1u pl19 ph0 cpdsH):fH ; H excitation and decoupling on.
+#   define DECOUPLE_H_OFF (p1 ph3 do pl1):fH  ; H decoupling off and flipback.
+#   define DECOUPLE_H_TROSY_ON p1 ph1 pl1 0.1u pl19 ph0 cpdsH
+#   define DECOUPLE_H_TROSY_OFF p1 ph3 do pl1
+# endif /*TROSY*/
+
+; H or D decoupling with flanking pulses:
+# ifdef LABEL_D
+#   define DECOUPLE_HD_ON (p53 ph1 plD d13 pl17 ph0 cpdsD):fD   ; D excitation and decoupling on.
+#   define DECOUPLE_HD_OFF (p53 ph3 do plD):fD ; D decoupling off and flipback.
+#   define START 30m LOCKDEC_ON 50u LOCKH_ON 30m H2_PULSE   ; Enable D decoupling.
+#   define END 30m H2_LOCK 30m LOCKH_OFF 30m LOCKDEC_OFF    ; Disable D decoupling.
+#   define SAMPLE 30m H2_LOCK 6m LOCKH_OFF             ; Sample lock.
+#   define UNBLANK 50u LOCKH_ON 30m H2_PULSE d13 UNBLKGRAMP ; Hold lock and blank gradient amplifier.
+#   define BLANK BLKGRAMP
+# else
+#   define DECOUPLE_HD_ON DECOUPLE_H_ON
+#   define DECOUPLE_HD_OFF DECOUPLE_H_OFF
+#   define START d13
+#   define END d13
+#   define SAMPLE d13
+#   define UNBLANK d13 UNBLKGRAD
+#   define BLANK BLKGRAD
+# endif /*LABEL_D*/
+
+;ns: 1 * n
+;ds: >= 16
+;td1: number of experiments
+
+;cpd1: decoupling according to sequence defined by cpdprg1, DIPSI2
+;cpd2: decoupling according to sequence defined by cpdprg2
+
+;cpd4: decoupling according to sequence defined by cpdprg4, waltz16
+
+;pcpd2: f2 channel - 90 degree pulse for decoupling sequence
+
+;gpz0: prefocussing gradient.
+;gpnam0: SMSQ10.100
+
+# if defined(ACQ_BIRD_C)
+    define delay dAcqHC
+#   ifndef ACQ_NO_GRAD
+#     define ACQ_GRAD
+#   endif
+#   ifdef ACQ_GRAD
+      "dAcqHC = d42 - p16 - d16"
+#   else
+      "dAcqHC = d42"
+#   endif
+# endif
+
+# if defined(ACQ_BIRD_C) || defined(ACQ_BIRD_N) || defined(ACQ_BASHD) || defined(ACQ_C)
+#   define ACQ_EXPLICIT
+    define delay dACQHalfChunk
+    "dACQHalfChunk = aq/(2*l30)"
+#   define lACQChunks l30
+;l30: Number of chunks for homodecoupling/chunked acquisition. TD must be a multiple of 2*l30.
+#   ifndef AV4
+      dwellmode explicit
+#   endif
+# endif
+
+# include <ME/pulses/H.incl>
+# include <ME/pulses/C.incl>
+# include <ME/pulses/protein_C.incl>
+# include <ME/pulses/N.incl>
+
+# include <ME/includes/cnsts.incl>
+# include <ME/includes/phases.incl>
+# include <ME/includes/gradients.incl>
+# include <ME/includes/pulses.incl>
+# include <ME/includes/delays.incl>
+
+# ifdef PROXIMAL_TROSY
+#   define TROSY_INV    /*For TROSY invert X magnetization after acquisition.*/
+#   if defined(PROXIMAL_C) && defined(PROXIMAL_NTROSY)
+/*    For aromatic CH pairs Halpha and Cbeta are the preferred states.*/
+#     if !defined(X_BETA) && !defined(X_ALPHA)
+#       define X_BETA
+#     endif
+#     if !defined(ALPHA) && !defined(BETA)
+#       define ALPHA
+#     endif
+/*    For amide NH pairs Hbeta and Nbeta are the preferred states. Mind the frequency signs!**/
+#   elif defined(PROXIMAL_NTROSY)
+#     if !defined(X_ALPHA) && !defined(X_BETA)
+#       define X_BETA
+#     endif
+#     if !defined(ALPHA) && !defined(BETA)
+#       define BETA
+#     endif
+#   endif
+# endif
+
+/*Bipolar gradients for the suppresion of radiation dampening with H2O on -z. Enforce minimum length and recovery time.*/
+# ifdef RDGRAD
+#   define RDGRAD_ON 1u gron31
+#   define RDGRAD_ON_NEG 1u gron31*-1
+#   define RDGRAD_OFF 2u groff
+#   define RDGRAD_COMP 6u
+;#   undef RDGRAD
+;#   define RDGRAD(d) RDGRAD_ON d RDGRAD_OFF
+;#   define RDGRAD_NEG(d) RDGRAD_ON_NEG d RDGRAD_OFF
+# elif defined(RDGRAD_EQUIV)
+# else
+#   define RDGRAD_ON
+#   define RDGRAD_ON_NEG
+#   define RDGRAD_OFF
+#   define RDGRAD_COMP
+;#   define RDGRAD(d) d
+;#   define RDGRAD_NEG(d) d
+# endif
+
+/* Sidestep problems with spdisp: */
+# if !defined(AV3) && defined(HSHIFT)
+#   undef HSHIFT
+# endif

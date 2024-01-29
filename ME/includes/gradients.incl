@@ -1,0 +1,161 @@
+
+# define gpPre gp0
+
+; 1-10 free
+# define gpFree1 gp1
+# define gpFree2 gp2
+# define gpFree3 gp3
+# define gpFree4 gp4
+# define gpFree5 gp5
+# define gpFree6 gp6
+# define gpFree7 gp7
+# define gpFree8 gp8
+
+# define gpProximal1 gp11
+# define gpProximal2 gp12
+# define gpProximal3 gp13
+# define gpProximal4 gp14
+# define gpProximal5 gp15
+# define gpProximal6 gp16
+# define gpProximalX gp17
+# define gpProximalX2 gp18
+# define gpProximalH gp19
+# define gpProximalH2 gp20
+
+# define gpDistal1 gp21
+# define gpDistal2 gp22
+# define gpDistal3 gp23
+# define gpDistal4 gp24
+# define gpDistal5 gp25
+
+# define gpNOESY gp27
+
+# define gpAcq1 gp28
+# define gpAcq2 gp29
+# define gpAcq3 gp30
+
+;gp31 reserved for rdgradient
+
+# define gpzPre gpz0
+# define gpzPre2 gpz1
+
+# define gpzFree1 gpz1
+# define gpzFree2 gpz2
+# define gpzFree3 gpz3
+# define gpzFree4 gpz4
+# define gpzFree5 gpz5
+# define gpzFree6 gpz6
+# define gpzFree7 gpz7
+# define gpzFree8 gpz8
+
+# define gpzProximal1 gpz11
+# define gpzProximal2 gpz12
+# define gpzProximal3 gpz13
+# define gpzProximal4 gpz14
+# define gpzProximal5 gpz15
+# define gpzProximal6 gpz16
+# define gpzProximalX gpz17
+# define gpzProximalX2 gpz18
+# define gpzProximalH gpz19
+# define gpzProximalH2 gpz20
+
+# define gpzDistal1 gpz21
+# define gpzDistal2 gpz22
+# define gpzDistal3 gpz23
+# define gpzDistal4 gpz24
+# define gpzDistal5 gpz25
+
+# define gpzNOESY gpz27
+
+# define gpzAcq1 gpz28
+# define gpzAcq2 gpz29
+# define gpzAcq3 gpz30
+
+# define GPZPre GPZ0
+# define GPZPre2 GPZ1
+
+# define GPZFree1 GPZ1
+# define GPZFree2 GPZ2
+# define GPZFree3 GPZ3
+# define GPZFree4 GPZ4
+# define GPZFree5 GPZ5
+# define GPZFree6 GPZ6
+# define GPZFree7 GPZ7
+# define GPZFree8 GPZ8
+
+# define GPZProximal1 GPZ11
+# define GPZProximal2 GPZ12
+# define GPZProximal3 GPZ13
+# define GPZProximal4 GPZ14
+# define GPZProximal5 GPZ15
+# define GPZProximal6 GPZ16
+# define GPZProximalX GPZ17
+# define GPZProximalX2 GPZ18
+# define GPZProximalH GPZ19
+# define GPZProximalH2 GPZ20
+
+# define GPZDistal1 GPZ21
+# define GPZDistal2 GPZ22
+# define GPZDistal3 GPZ23
+# define GPZDistal4 GPZ24
+# define GPZDistal5 GPZ25
+
+# define GPZNOESY GPZ27
+
+# define GPZAcq1 GPZ28
+# define GPZAcq2 GPZ29
+# define GPZAcq3 GPZ30
+
+# define gpnamPre gpnam0
+# define gpnamPre2 gpnam1
+
+# define gpnamFree1 gpnam1
+# define gpnamFree2 gpnam2
+# define gpnamFree3 gpnam3
+# define gpnamFree4 gpnam4
+# define gpnamFree5 gpnam5
+# define gpnamFree6 gpnam6
+# define gpnamFree7 gpnam7
+# define gpnamFree8 gpnam8
+
+# define gpnamProximal1 gpnam11
+# define gpnamProximal2 gpnam12
+# define gpnamProximal3 gpnam13
+# define gpnamProximal4 gpnam14
+# define gpnamProximal5 gpnam15
+# define gpnamProximal6 gpnam16
+# define gpnamProximalX gpnam17
+# define gpnamProximalX2 gpnam18
+# define gpnamProximalH gpnam19
+# define gpnamProximalH2 gpnam20
+
+# define gpnamDistal1 gpnam21
+# define gpnamDistal2 gpnam22
+# define gpnamDistal3 gpnam23
+# define gpnamDistal4 gpnam24
+# define gpnamDistal5 gpnam25
+
+# define gpnamNOESY gpnam27
+
+# define gpnamAcq1 gpnam28
+# define gpnamAcq2 gpnam29
+# define gpnamAcq3 gpnam30
+
+define list<gradient> EA2=<EA2>
+
+;gpnam0: SMSQ10.100
+;gpnam1: SMSQ10.100
+
+;gpz0: Prefocussing gradient.
+
+# ifdef GRAD
+#   undef GRAD
+# endif
+
+# ifndef NO_GRAD
+#   define GRAD(gpn) pGRAD:gpn dGRAD
+#   define GRAD_EA(gpn) pGRAD:gpn*EA dGRAD
+# else
+#   define GRAD(gpn)
+#   define GRAD_EA(gpn)
+# endif

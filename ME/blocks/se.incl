@@ -1,0 +1,108 @@
+# ifndef INIT_DONE
+
+define delay dXH_SE1_1  ; First echo of the sensitivity enhanced transfer.
+define delay dXH_SE1_2 ; First echo of the sensitivity enhanced transfer.
+define delay dXH_SE2  ; Second echo of the sensitivity enhanced transfer.
+define delay ECHOTIME1  ; Delay before the last H refocussing pulse.
+define delay ECHOTIME2  ; Delay after the last H refocussing pulse.
+
+; Nietlispach's TROSY requires an extra flipback pulse to bring H2O back to z:
+# if defined(PROXIMAL_NTROSY) && !defined(H_SHAPED)
+#   define H2O_flipback_NTROSY(ph) (H2O_flipback(ph)):fH
+    "dXH_SE1_1 = timeXH/2 - pGProximalS - dGProximalS - eHX_refocussing/2 - eHX_fb_UR - pH2O_excitation"
+# else
+#   define H2O_flipback_NTROSY(ph)
+    "dXH_SE1_1 = timeXH/2 - pGProximalS - dGProximalS - eHX_refocussing/2 - eHX_fb_UR"
+# endif
+
+; Compensate J evolution delays for gradients and evolution during pulses:
+"dXH_SE1_2 = timeXH/2 - pGProximalS - dGProximalS - eHX_refocussing/2 - eHX_fb_UR"
+"dXH_SE2 = timeXH/2 - pGProximalS - dGProximalS - eHX_refocussing/2 - eHX_exc_UR"
+
+; Delays in the gradient selection echo on H:
+"ECHOTIME1 = ME_de"
+"ECHOTIME2 = eHX_fb_UR"
+
+; Mutually compensate delays in the last echo of a sensitivity enhanced sequence:
+"if (ECHOTIME1 >= ECHOTIME2) {ECHOTIME1 -= ECHOTIME2; ECHOTIME2 = 0;}"
+"if (ECHOTIME2 > ECHOTIME1) {ECHOTIME2 -= ECHOTIME1; ECHOTIME1 = 0;}"
+
+; *****************************************************************************
+# elif !defined(IMPORT_PHASES)
+
+/*C and N have different signs of Larmor frequency.*/
+# if defined(PROXIMAL_NTROSY) || defined(PROXIMAL_ECOSY)
+#   ifdef PROXIMAL_C
+#     define SEph0TROSYph1X ph1
+#     define SEph0TROSYph1H ph1
+#   else
+#     define SEph0TROSYph1X ph3
+#     define SEph0TROSYph1H ph1
+#   endif
+#   define SEph1TROSYph0 ph0
+# else /*SE_HSQC*/
+#   define SEph0TROSYph1X ph0
+#   define SEph0TROSYph1H ph0
+#   ifdef PROXIMAL_C
+#     define SEph1TROSYph0 ph3
+#   else
+#     define SEph1TROSYph0 ph1
+#   endif
+# endif
+
+; phProximalState - last X pulse of the TRANSFER block determines selection of X spin state:
+# if defined(X_ALPHA) && defined(ALPHA)
+#   define phProximalState ph2
+# elif defined(X_ALPHA) && defined(BETA)
+#   define phProximalState ph0
+# elif defined(X_BETA) && defined(ALPHA)
+#   define phProximalState ph0
+# else /*X_BETA BETA*/
+#   define phProximalState ph2
+# endif
+
+    (ralign (HX_fb_UR(ph0)):fH (X_exc_UR(phProximal3)):fX)
+    H2O_flipback_NTROSY(ph0)
+    PROXIMAL_GRAD_SHORT(gpProximal2)
+    dXH_SE1_1
+    (center (HX_refocussing(ph0)):fH (X_refocussing(ph0)):fX)
+    dXH_SE1_2
+    PROXIMAL_GRAD_SHORT(gpProximal2)
+    (lalign (HX_exc_UR(ph1)):fH (X_fb_UR(SEph1TROSYph0)):fX)
+    PROXIMAL_GRAD_SHORT(gpProximal3)
+    dXH_SE2
+    (center (HX_refocussing(ph0)):fH (X_refocussing(ph0)):fX)
+    dXH_SE2
+    PROXIMAL_GRAD_SHORT(gpProximal3)
+#   if defined(PROXIMAL_ECOSY) || defined(PROXIMAL_NTROSY)
+      (ralign (HX_fb_UR(SEph0TROSYph1H)):fH (X_exc_UR(SEph0TROSYph1X + phProximalState)):fX)
+#   else
+      (ralign (HX_fb_UR(ph0)):fH (dX_universal):fX)
+#   endif
+  pGRAD:gpProximalH
+  dGRAD
+  ECHOTIME1
+  (HX_WATERGATE(ph0)):fH
+  ECHOTIME2
+  pGRAD:gpProximalH2
+  dGRAD CPD_POW BLKGRAD
+
+; *****************************************************************************
+# elif defined(IMPORT_PHASES)
+
+; E/A selecting phase:
+# if defined(X_ALPHA) && !defined(XH)
+    phProximal3 = 2
+# elif defined(XH) && !defined(X_ALPHA)
+    phProximal3 = 2
+# else /*X_BETA or HSQC*/
+    phProximal3 = 0
+# endif
+
+;gpzProximal2: Gradient in first COS-INEPT echo: 5%.
+;gpzProximal3: Gradient in second COS-INEPT echo: 2%.
+
+;gpnamProximal2: SMSQ10.100
+;gpnamProximal3: SMSQ10.100
+
+# endif /*INIT_DONE*/

@@ -1,0 +1,34 @@
+/*ph0-3 constant phases.*/
+# define phRestricted1 ph4
+# define phRestricted2 ph5
+# define phRestricted3 ph6
+# define phRestricted4 ph7
+# define phRestricted5 ph8
+# define phRestricted6 ph9
+# define phRestricted7 ph10
+
+# define phProximal1 ph11
+# define phProximal2 ph12
+# define phProximal3 ph13
+# define phProximal4 ph14
+# define phProximal5 ph15
+
+# define phFree1 ph16
+# define phFree2 ph17
+# define phFree3 ph18
+# define phFree4 ph19
+# define phFree5 ph20
+
+# define phDistal1 ph21
+# define phDistal2 ph22
+# define phDistal3 ph23
+# define phDistal4 ph24
+# define phDistal5 ph25
+
+# define phFree6 ph26
+# define phFree7 ph27
+# define phFree8 ph28
+# define phFree9 ph29
+
+# define phRec2 ph30
+# define phRec ph31

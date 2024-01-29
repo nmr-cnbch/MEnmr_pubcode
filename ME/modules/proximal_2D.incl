@@ -1,0 +1,18 @@
+/* Set pulses */
+# ifndef PROXIMAL_PULSES_SET
+#   include <ME/pulses/proximal.incl>
+#   define PROXIMAL_PULSES_SET
+# endif
+
+/* Include the appropriate file: */
+# if defined(XH)
+#   include <ME/modules/XH.pp>
+# elif defined(PROXIMAL_NTROSY) || defined(PROXIMAL_TROSY)
+#   include <ME/modules/hsqc_se.pp>
+# elif defined(PROXIMAL_HMQC)
+#   include <ME/modules/hmqc.pp>
+# elif defined(PROXIMAL_HSQC_SE)
+#   include <ME/modules/hsqc_se.pp>
+# else
+#   include <ME/modules/hsqc.pp>
+# endif

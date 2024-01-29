@@ -1,0 +1,30 @@
+; Selective excitation pulse for H -> N:
+;sp54:wvm: e400b(cnst51 ppm; TR)
+"spoff54 = bf1*(cnst52/1000000) - o1"
+"spoal54 = 0"
+"cnst54 = 0.57" ; Evolution time quotient in FB-E configuration.
+
+;   Selective flipback pulse for H -> N:
+;sp55:wvm: e400b(cnst51 ppm)
+"spoff55 = bf1*(cnst52/1000000) - o1"
+"spoal55 = 1"
+"cnst55 = 0.57" ; Evolution time quotient in FB-E configuration.
+
+;   Selective refocussing pulse for H:
+;sp56:wvm: Q3(cnst50 ppm)
+"spoff56 = bf1*(cnst52/1000000) - o1"
+"spoal56 = 0.5"
+"cnst56 = 0"
+
+;   Second pair of pulses for use in backtransfer:
+; Selective excitation pulse for H -> N:
+;sp57:wvm: e400b(cnst51 ppm; TR)
+"spoff57= bf1*(cnst52/1000000) - o1"
+"spoal57 = 0"
+"cnst57 = 0.57"
+
+;   Selective flipback pulse for H -> N:
+;sp58:wvm: e400b(cnst51 ppm)refocussing
+"spoff58 = bf1*(cnst52/1000000) - o1"
+"spoal58 = 1"
+"cnst58 = 0.57"

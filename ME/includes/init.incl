@@ -1,0 +1,9 @@
+# include <ME/config.incl>
+
+# if defined(PROXIMAL_N) || defined(PROXIMAL_C)
+#   include <ME/modules/proximal_2D.incl>
+# endif
+
+# if defined(DISTAL_N) || defined(DISTAL_C)
+#   include <ME/modules/distal_2D.incl>
+# endif

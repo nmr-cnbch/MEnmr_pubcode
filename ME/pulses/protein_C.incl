@@ -1,0 +1,38 @@
+
+/*Standard TopSpin pulses:*/
+#   define CA_excitation(ph) p13:sp2 ph
+#   define CA_flipback(ph) p13:sp8 ph
+#   define CA_refocussing(ph) p14:sp3 ph
+#   define CA_inversion(ph) p14:sp3 ph
+#   define CA_BSP_inversion(ph) p14:sp3 ph
+# ifdef CACO_SPLIT /*Use on-resonance pulse for separate C channels*/
+#   define CA_CO_inversion(ph) p14:sp3 ph
+#   define CA_CO_BSP_inversion(ph) p14:sp3 ph
+# else
+#   define CA_CO_inversion(ph) p14:sp7 ph
+#   define CA_CO_BSP_inversion(ph) p14:sp7 ph
+    "spoff7 = bf2*((cnst22 - cnst21)/1000000)"
+# endif
+
+
+#   define CO_excitation(ph) p13:sp2 ph
+#   define CO_flipback(ph) p13:sp8 ph
+#   define CO_refocussing(ph) p14:sp3 ph
+#   define CO_inversion(ph) p14:sp3 ph
+
+;# ifdef GOODCOP
+;#   define CO_CA_inversion(ph)
+;    define delay dGOODCOP
+;    "dGOOCOP = p14*0.9"
+;#   define CO_CA_BSP_inversion(ph) dGOODCOP
+;    "spoff5 = 0"
+;# else
+#   ifdef CACO_SPLIT /*Use on-resonance pulse for separate C channels*/
+#     define CO_CA_inversion(ph) p14:sp3 ph
+#     define CO_CA_BSP_inversion(ph) p14:sp3 ph
+#   else
+#     define CO_CA_inversion(ph) p14:sp5 ph
+#     define CO_CA_BSP_inversion(ph) p14:sp5 ph
+      "spoff5 = bf2*((cnst21 - cnst22)/1000000)"
+#   endif
+;# endif

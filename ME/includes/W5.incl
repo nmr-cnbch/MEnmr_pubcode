@@ -1,0 +1,43 @@
+; Watergate W5 pulse corrected for evolution during pulses
+
+; Clean inversion starts at a/5 and ends at 4a/5 (3a/5 width) for DPFGSE.
+
+define delay W5D
+;cnst41: is the center of the passband (HN).
+"W5D = 1/(2s * (cnst41*bf1/1000000 - o1))"  ; 1/(distance to next null).
+
+define pulse W5P1
+"W5P1 = (7.8/90)*p1"
+define pulse W5P2
+"W5P2 = (18.5/90)*p1"
+define pulse W5P3
+"W5P3 = (37.2/90)*p1"
+define pulse W5P4
+"W5P4 = (70.4/90)*p1"
+define pulse W5P5
+"W5P5 = (134.2/90)*p1"
+
+define delay W5D1
+"W5D1 = W5D - 2*(W5P1 + W5P2)/PI"
+define delay W5D2
+"W5D2 = W5D - 2*(W5P2 + W5P3)/PI"
+define delay W5D3
+"W5D3 = W5D - 2*(W5P3 + W5P4)/PI"
+define delay W5D4
+"W5D4 = W5D - 2*(W5P4 + W5P5)/PI"
+define delay W5D5
+"W5D5 = W5D - 2*(W5P5 + W5P5)/PI"
+define delay W5D6
+"W5D6 = W5D - 2*(W5P5 + W5P4)/PI"
+define delay W5D7
+"W5D7 = W5D - 2*(W5P4 + W5P3)/PI"
+define delay W5D8
+"W5D8 = W5D - 2*(W5P3 + W5P2)/PI"
+define delay W5D9
+"W5D9 = W5D - 2*(W5P2 + W5P1)/PI"
+
+define delay W5LENGTH
+"W5LENGTH = 2*(W5P1 + W5P2 + W5P3 + W5P4 + W5P5) + W5D1 + W5D2 + W5D3 + W5D4 + W5D5 + W5D6 + W5D7 + W5D8 + W5D9"
+
+# undef W5
+# define W5(ph) W5P1 ph pl1 W5D1 W5P2 ph W5D2 W5P3 ph W5D3 W5P4 ph W5D4 W5P5 ph W5D5 W5P5 ph2+ph W5D6 W5P4 ph2+ph W5D7 W5P3 ph2+ph W5D8 W5P2 ph2+ph W5D9 W5P1 ph2+ph

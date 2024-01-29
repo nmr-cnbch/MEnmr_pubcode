@@ -1,0 +1,38 @@
+define delay dC_inversion
+define delay dC_universal
+
+define pulse pC_refocussing
+define pulse pC_inversion
+
+define pulse eC_excitation
+define pulse eC_flipback
+define pulse eC_universal
+
+# ifdef C_SHAPED
+#   define C_inversion_BB(ph) p8:sp13 ph
+;    "dC_inversion = p8"
+#   define C_excitation(ph) p13:sp2 ph
+#   define C_flipback(ph)   p13:sp8 ph
+#   define C_universal(ph) C_excitation(ph)
+    "dC_universal = p13"
+#   define C_exc_UR(ph) C_flipback(ph)
+#   define C_fb_UR(ph) C_excitation(ph)
+#   define C_refocussing(ph) p14:sp3 ph
+    "pC_refocussing = p14"
+#   define C_inversion(ph)  C_refocussing(ph)
+    "dC_inversion = p14"
+    "eC_excitation = 0"
+# else
+#   define C_excitation(ph) p3 ph pl2
+#   define C_flipback(ph) p3 ph pl2
+#   define C_universal(ph) C_excitation(ph)
+    "pC_refocussing = p4"
+    "pC_inversion = p4"
+#   define C_refocussing(ph) p4 ph pl2
+#   define C_inversion(ph) p41:sp41 ph
+#   define C_exc_UR(ph) C_flipback(ph)
+#   define C_fb_UR(ph) C_excitation(ph)
+    "dC_inversion = p41"
+    "dC_universal = p3"
+    "eC_excitation = p3*2/PI"
+# endif

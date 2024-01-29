@@ -1,0 +1,37 @@
+
+
+/*Offsets:*/
+
+;cnst2: offset N + NH (with prolines), 127/60 ppm.
+;cnst3: offset NH (without prolines), 117/40 ppm.
+
+;cnst8: HM bandwidth, 2.5 ppm.
+;cnst9: offset Hmet, 0.9/2.5 ppm.
+# define widthHM cnst8
+# define offsetHM cnst9
+
+;cnst10: H gradient multiplier for encoding on N [0.10125].
+;cnst11: H gradient multiplier for encoding on C [0.25125].
+# define cnstGNH cnst10
+# define cnstGCH cnst11
+
+;cnst20: offset C, 93/186 ppm.
+;cnst21: offset CA, 55/35 ppm.
+;cnst22: offset CO, 176.5/16 ppm.
+"cnst23 = (cnst22 + cnst21)/2"    ; Middle between CA and CO.
+;cnst24: offset Cali, 40/80 ppm.
+;cnst25: offset CB (includes CA), 44/65 ppm.
+;cnst26: offset CBaro, 35/25 ppm.
+;cnst27: offset CACBaro, 45/45 ppm.
+;cnst28: offset Caro, 125/45 ppm.
+;cnst29: offset Caro (without CG), 127/40 ppm.
+"cnst30 = (cnst26 + cnst28)/2"  ; Middle between CB and CG(aro).
+
+;cnst41: offset HN, 8.5/7 ppm.
+;cnst42: offset HAHB, 3.5/7 ppm.
+;cnst43: offset HCali, 3/8 ppm.
+;cnst44: offset HCaro, 7/3 ppm.
+
+;cnst51: HN bandwidth, 7 ppm.
+
+;cnst61: distal H offset for TPPI shifting of an indirect dimension [ppm].

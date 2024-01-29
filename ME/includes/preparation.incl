@@ -1,0 +1,124 @@
+
+2 d11 SAT_ON do:f2 do:f3
+; TODO: CPD_OFF
+; Calculate recycling delay including everything outside pulses and acquisition time.
+
+; Reset relaxation delay:
+# ifdef RECYCLING
+    "d0 = vd_list[l1]"
+# else
+    "d0 = d1"   ; Reset relaxation delay.
+# endif
+
+"d0 -= d11 + 4u"    ; Account for d11 file write delay and 4u delay for UNBLKGRAD.
+
+# ifdef TROSY_INV
+    (X_inversion(ph0)):fX
+    "d0 -= dX_inversion"
+# endif
+
+# ifdef DS
+  "cnst3 += 1"  ; Count scans for DS option.
+# endif
+
+# if defined(H_ASAP) && defined(H_ASAP_START) && !defined(PRESAT)
+#   define lTOCSY l21
+#   define pTOCSY p33
+#   define plTOCSY pl58
+#   define fTOCSY f1
+    1m fq=cnst21(bf ppm):fH
+    (p1 pl1 ph1):fH
+#   include <DIPSI3.mjg>
+    (p1 pl1 ph3):fH
+    4u fq=0(sfo ppm):fH
+# endif
+
+# if defined(C_ASAP) && defined(C_ASAP_START)
+#   define lTOCSY l22
+#   define pTOCSY p34
+#   define plTOCSY pl59
+#   define fTOCSY f2
+    1m fq=cnst22(bf ppm):fX
+#   include <FLOPSY16.mjg>
+    4u fq=0(sfo ppm):fX
+# endif
+
+# if defined(PREG_END)
+   4u UNBLKGRAD
+   p16:gp0
+   d16
+   4u BLKGRAD
+   "d0 -= 4u + p16 + d16 + 4u"
+# endif
+
+# if defined(PURGE) || defined(PREG)
+  "d0 -= 2m"
+# endif
+# ifdef PURGE
+  "d0 -= p13*2"
+# endif
+# if defined(PREG)
+    "d0 -= p16 + d16"
+# endif
+
+# ifdef PROXIMAL_d0
+    PROXIMAL_d0   ; Correct relaxation delay for proximal 2D delays before experiment.
+# endif
+  d0    ; Relaxation delay.
+
+;# if defined(H_ASAP) && !defined(H_ASAP_START)
+;#   define lTOCSY l21
+;#   define pTOCSY p33
+;#   define plTOCSY pl58
+;#   define fTOCSY f1
+;    (p1 pl1 ph1):fH
+;#   include <DIPSI3.pp>
+;    (p1 pl1 ph3):fH
+;# endif
+
+;# if defined(C_ASAP) && !defined(C_ASAP_START)
+;#   define lTOCSY l22
+;#   define pTOCSY p34
+;#   define plTOCSY pl59
+;#   define fTOCSY f2
+;    1m fq=cnst22(bf ppm):fX
+;#   include <FLOPSY16.pp>
+;    1m fq=0(sfo ppm):fX
+;# endif
+  4u do:f1 UNBLKGRAD
+
+# ifdef PURGE
+    (p13:sp5 ph0):fH    ; Water flipdown.
+    p16:gp3
+    d16
+    (p13:sp5 ph1):fH    ; Water flipdown.
+    p16:gp4
+    d16
+# endif
+
+# if defined(PREG) && !defined(PREG_END)
+   p16:gp0
+   d16
+# endif
+
+# ifdef CRUSH
+#   if defined(LABEL_C)
+      4u fq=cnst23(bf ppm):fC
+#   endif
+    (C_excitation(ph0)):fC
+#   if defined(LABEL_N)
+      (N_excitation(ph0)):fN
+#   endif
+    pGRAD:gp1
+    dGRAD
+#   if defined(LABEL_C)
+      4u fq=0(sfo ppm):fC
+#   endif
+# endif /*CRUSH*/
+
+; Extra gradient delay:  
+# if defined(PURGE) || defined(PREG)
+  2m
+# endif
+
+# define INIT_DONE

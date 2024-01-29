@@ -1,0 +1,102 @@
+# ifdef WATER_TEST
+    "if (plw5 > plw1/100) {plw5 = plw1/100;}"
+    (8up pl5 ph31):fH
+# endif
+
+# ifdef EA_SPLIT_GO
+; Split acquisition to allow for different echo and anti-echo phasing in ST2-PT type transfers:
+  if "l0 %2 == 1"
+    {
+      go=2 ph31 CPD_ON_GO
+    }
+  else
+    {
+      go=2 ph31 ph30:r CPD_ON_GO
+    }
+# elif !defined(ACQ_EXPLICIT)
+    go=2 ph31 CPD_ON_GO
+# else
+
+# ifdef AV4
+#   define ME_SAMPLING_START 0.1u REC_UNBLK \n 0.05u DWELL_RELEASE
+#   define ME_SAMPLING_STOP 0.05u DWELL_HOLD \n 0.1u REC_BLK
+#   define ME_SAMPLING_START_CPD 0.1u REC_UNBLK CPD_OFF \n 0.05u DWELL_RELEASE
+#   define ME_SAMPLING_STOP_CPD 0.05u DWELL_HOLD CPD_POW \n 0.1u REC_BLK CPD_ON UNBLKGRAD
+# else
+#   define START_NEXT_SCAN
+#   define ME_SAMPLING_START 1u REC_UNBLK CPD_POW CPD_ON \n 6u DWL_CLK_ON
+#   define ME_SAMPLING_START_BLK 1u REC_UNBLK CPD_POW CPD_ON \n 6u DWL_CLK_ON UNBLKGRAD
+#   define ME_SAMPLING_STOP 1u DWL_CLK_OFF \n 6u REC_BLK CPD_OFF
+#   define ME_SAMPLING_STOP_BLK 1u DWL_CLK_OFF \n 6u REC_BLK CPD_OFF BLKGRAD
+# endif
+
+; Homodecoupling - BASHD/BIRD
+ACQ_START(ph30, ph31) ; length = de
+0.1u START_NEXT_SCAN
+
+# ifdef ACQ_GRAD
+#   define ACQ_GRAD_EXTERNAL p16:gpAcq1 d16
+#   define ACQ_GRAD_EXTERNAL2 p16:gpAcq1*-1 d16
+#   define ACQ_GRAD_BIPOLAR p16:gpAcq2 d16 p16:gpAcq2*-1 d16
+#   define ACQ_GRAD_INTERNAL p16:gpAcq3 d16
+# else
+#   define ACQ_GRAD_EXTERNAL 10u
+#   define ACQ_GRAD_EXTERNAL2 10u
+#   define ACQ_GRAD_BIPOLAR 1u
+#   define ACQ_GRAD_INTERNAL 1u
+# endif
+
+ACQ_start, ME_SAMPLING_START
+dACQHalfChunk
+ME_SAMPLING_STOP_BLK
+
+# ifdef ACQ_BIRD_C
+;   Invert protons not coupled to X:
+    ACQ_GRAD_EXTERNAL
+    (p1 ph0 pl1):f1
+    ACQ_GRAD_INTERNAL
+    dAcqHC
+    (center (p2 ph0 pl1):fH (C_inversion(ph0)):fC)
+    dAcqHC
+    ACQ_GRAD_INTERNAL
+    (p1 ph2 pl1):f1
+
+    ACQ_GRAD_BIPOLAR
+
+;   Invert all protons:
+    (p2 ph0 pl1):f1
+    ACQ_GRAD_EXTERNAL2
+# elif defined(ACQ_BASHD)
+;   Invert band:
+    ACQ_GRAD_EXTERNAL
+    ACQ_GRAD_INTERNAL
+    (HX_refocussing(ph0)):fH
+    ACQ_GRAD_INTERNAL
+
+;   Invert all protons:
+    (p2 ph0 pl1):f1
+    ACQ_GRAD_EXTERNAL2
+
+# elif defined(ACQ_C)
+;   Decouple weak J coupling with inversion pulses:
+    ACQ_GRAD_EXTERNAL
+    (C_inversion(ph0)):fC
+    ACQ_GRAD_EXTERNAL2
+# endif
+
+  ME_SAMPLING_START_BLK
+  dACQHalfChunk
+  ME_SAMPLING_STOP
+
+  lo to ACQ_start times lACQChunks
+  rcyc=2
+
+;gpnamAcq1: SMSQ10.100
+;gpnamAcq2: SMSQ10.100
+;gpnamAcq3: SMSQ10.100
+
+;gpzAcq1: Outer gradient pair for homodecoupling [3%].
+;gpzAcq2: Bipolar gradient for homodecoupling [0.3%].
+;gpzAcq3: Intra-INEPT gradient pair for homodecoupling [1%].
+
+# endif

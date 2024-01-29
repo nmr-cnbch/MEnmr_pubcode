@@ -1,0 +1,14 @@
+/* Set pulses */
+# ifndef DISTAL_PULSES_SET
+#   include <ME/pulses/distal.incl>
+#   define DISTAL_PULSES_SET
+# endif
+
+/* Include the appropriate file: */
+# if defined(HX)
+#   include <ME/modules/HX.pp>
+# elif defined(DISTAL_HMQC)
+#   include <ME/modules/distal_hmqc.pp>
+# elif defined(DISTAL_HSQC)
+#   include <ME/modules/distal_hsqc.pp>
+# endif

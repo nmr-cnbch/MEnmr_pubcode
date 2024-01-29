@@ -1,0 +1,7 @@
+# define ME_PULSES
+
+# if defined(DISTAL_N) || defined(DISTAL_C)
+#   include <ME/modules/proximal_2D.incl>
+# endif
+
+# include <ME/includes/acq.incl>

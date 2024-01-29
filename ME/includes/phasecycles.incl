@@ -1,0 +1,16 @@
+# define IMPORT_PHASES
+
+ph0 = 0
+ph1 = 1
+ph2 = 2
+ph3 = 3
+
+ph30 = 0
+
+# if defined(DISTAL_N) || defined(DISTAL_C)
+#   include <ME/modules/distal_2D.incl>
+# endif
+
+# if defined(PROXIMAL_N) || defined(PROXIMAL_C)
+#   include <ME/modules/proximal_2D.incl>
+# endif

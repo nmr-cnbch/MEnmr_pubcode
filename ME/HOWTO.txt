@@ -1,0 +1,11 @@
+To use the library copy the ME folder into a directory TopSpin searches for libraries, like .../exp/stan/nmr/lists/pp/user
+
+The library functions will be usable by imports like:
+
+# include <ME/includes/init.incl>
+
+In order to use ME pulse sequences the ME/seq/2D, ME/seq/backbone or ME/seq/NOESY have to be added to the list of Pulse Program directories in TopSpin.
+In order to do this any file choice dialog has to be opened (for example pulse program choice from the "..." symbol next to PULPROG variable in the AcquPars window) and under Options there will be an option called "Menage Source Directories". Changes will be applied after TopSpin restart.
+Similarly ME/ME should be added to the list of prosol relation files.
+
+Please note that due to the fact that TopSpin parameter files are not transferable between spectrometers acquisition parameters have to be set up manually.

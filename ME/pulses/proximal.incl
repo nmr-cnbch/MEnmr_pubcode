@@ -1,0 +1,218 @@
+; Use gradients by default:
+# ifndef NO_PROXIMAL_GRAD
+#   define PROXIMAL_GRAD
+# endif
+
+# ifdef PROXIMAL_GRAD
+#   define PROXIMAL_GRAD_SHORT(gpn) pGProximalS:gpn dGProximalS
+#   define PROXIMAL_GRAD_LONG(gpn) pGRAD:gpn dGRAD
+# else
+    "pGProximalS = 0"
+    "dGProximalS = 0"
+#   define PROXIMAL_GRAD_SHORT(gpn)
+#   define PROXIMAL_GRAD_LONG(gpn)
+# endif
+
+/*For NH default to decoupling C:*/
+# if defined(PROXIMAL_N) && defined(LABEL_C) && !defined(PROXIMAL_Y_C)
+#   define PROXIMAL_Y_C
+# endif
+
+define delay timeHX
+define delay timeXH
+# ifdef PROXIMAL_CH3
+  "timeHX = d41"
+  "timeXH = d42"
+# elif defined(PROXIMAL_CH1)
+  "timeHX = d24"
+  "timeXH = d24"
+# elif defined(PROXIMAL_Caro)
+  "timeHX = d28"
+  "timeXH = d29"
+# elif defined(PROXIMAL_N)
+  "timeHX = d21"
+  "timeXH = d22"
+# else
+  "timeHX = d24"
+  "timeXH = d25"
+# endif
+
+define pulse pY_inversion
+
+define delay timeXY
+/*Determine the number of evolved J couplings of X:*/
+# if defined(PROXIMAL_N) && defined(PROXIMAL_Y_CO)
+#   define PROXIMAL_Y
+#   define fY fCO
+    "timeXY = d30"
+#   define PROXIMAL_fqY cnst22
+    "pY_inversion = p14"
+#   define Y_inversion(ph) CO_inversion(ph)
+# elif defined(PROXIMAL_N) && defined(PROXIMAL_Y_CA)
+#   define PROXIMAL_Y
+#   define fY fCA
+    "timeXY = d31"
+#   define PROXIMAL_fqY cnst21
+    "pY_inversion = p14"
+#   define Y_inversion(ph) CA_inversion(ph)
+# elif defined(PROXIMAL_N) && defined(PROXIMAL_Y_CACO)
+#   define PROXIMAL_Y
+#   define fY fC
+    "timeXY = d39"
+#   define PROXIMAL_TWIN_Y
+#   define PROXIMAL_fqY cnst23
+    "pY_inversion = pC_inversion"
+#   define Y_inversion(ph) C_inversion(ph)
+# elif defined(PROXIMAL_N) && defined(PROXIMAL_Y_CACA)
+#   define PROXIMAL_Y
+#   define fY fCA
+    "timeXY = d40"
+#   define PROXIMAL_TWIN_Y
+#   define PROXIMAL_fqY cnst21
+    "pY_inversion = p14"
+#   define Y_inversion(ph) CA_inversion(ph)
+# elif defined(PROXIMAL_Y_N)
+#   define fY fN
+#   define Y_inversion(ph) N_inversion(ph)
+    "pY_inversion = dN_inversion"
+# elif defined(PROXIMAL_Y_C)
+#   define fY fC
+#   define Y_inversion(ph) C_inversion(ph)
+    "pY_inversion = dC_inversion"
+# else
+#   define fY fH
+#   define Y_inversion(ph) 0u
+    "pY_inversion = 0"
+# endif
+
+# if defined(PROXIMAL_X_EVOLVED) && !defined(TROSY)
+#   if defined(PROXIMAL_TWIN_Y)
+#     define PROXIMAL_NUM_COUPLINGS 2
+#   else
+#     define PROXIMAL_NUM_COUPLINGS 1
+#   endif
+# else
+#   if defined(PROXIMAL_TWIN_Y)
+#     define PROXIMAL_NUM_COUPLINGS 3
+#   else
+#     define PROXIMAL_NUM_COUPLINGS 2
+#   endif
+# endif
+
+define delay dX_inversion
+define delay dX_universal
+
+define pulse pHX_inversion
+define pulse pHX_exc_UR
+define pulse pHX_refocussing
+
+define pulse eHX_refocussing
+define pulse eHX_excitation
+define pulse eHX_exc_UR
+define pulse eHX_fb_UR
+define pulse eX_excitation
+
+define pulse eHX_WATERGATE
+define pulse pX_inversion
+define pulse pX_refocussing
+
+# if PROXIMAL_C
+    "dX_inversion = dC_inversion"
+    "dX_universal = dC_universal"
+    "pX_inversion = pC_inversion"
+#   define fX fC
+#   define X_excitation(ph) C_excitation(ph)
+#   define X_flipback(ph) C_flipback(ph)
+#   define X_universal(ph) C_universal(ph)
+#   define X_exc_UR(ph) C_exc_UR(ph)
+#   define X_fb_UR(ph) C_fb_UR(ph)
+#   define X_refocussing(ph) C_refocussing(ph)
+#   define X_inversion(ph) C_inversion(ph)
+
+#   define eX_excitation eC_excitation
+    "eX_excitation = eC_excitation"
+#   define pX_refocussing pC_refocussing
+    "pX_refocussing = pC_refocussing"
+# else /*PROXIMAL_N*/
+    "dX_inversion = dN_inversion"
+    "dX_universal = dN_universal"
+    "pX_inversion = pN_inversion"
+#   define fX fN
+#   define X_excitation(ph) N_excitation(ph)
+#   define X_flipback(ph) N_flipback(ph)
+#   define X_universal(ph) N_universal(ph)
+#   define X_exc_UR(ph) N_exc_UR(ph)
+#   define X_fb_UR(ph) N_fb_UR(ph)
+#   define X_refocussing(ph) N_refocussing(ph)
+#   define X_inversion(ph) N_inversion(ph)
+
+#   define eX_excitation eN_excitation
+    "eX_excitation = eN_excitation"
+    "pX_refocussing = pN_refocussing"
+# endif
+
+define pulse pA_inversion
+# ifdef PROXIMAL_A_CA
+#   define PROXIMAL_A
+#   define A_inversion(ph) CA_CO_inversion(ph)
+    "pA_inversion = p14"
+#   define fA fCA
+# elif defined(PROXIMAL_A_CO)
+#   define PROXIMAL_A
+#   define A_inversion(ph) CO_CA_inversion(ph)
+    "pA_inversion = p14"
+#   define fA fCO
+# else
+#   define fA fH
+# endif
+
+# ifdef PROXIMAL_C
+#   define dHX_inversion dHC_inversion
+#   define dHX_inversion_raw dHC_inversion_raw
+#   define HX_excitation(ph) HC_excitation(ph)
+#   define HX_flipback(ph) HC_flipback(ph)
+#   define HX_refocussing(ph) HC_refocussing(ph) 
+#   define HX_refocussing_raw(ph) HC_refocussing_raw(ph)
+#   define HX_inversion(ph) HC_inversion(ph)
+#   define HX_exc_UR(ph) HC_exc_UR(ph)
+#   define HX_fb_UR(ph) HC_fb_UR(ph)
+#   define HX_WATERGATE(ph) HC_WATERGATE(ph)
+    "eHX_WATERGATE = eHC_WATERGATE"
+    "pHX_refocussing = pHC_refocussing"
+    "pHX_inversion = pHC_inversion"
+    "pHX_exc_UR = pHC_exc_UR"
+    "eHX_excitation = eHC_excitation"
+    "eHX_refocussing = eHC_refocussing"
+    "eHX_exc_UR = eHC_exc_UR"
+    "eHX_fb_UR = eHC_fb_UR"
+
+# else /*PROXIMAL_N or PROXIMAL_Caro*/
+#   define dHX_inversion dH_inversion
+#   define dHX_inversion_raw dH_inversion_raw
+#   define HX_excitation(ph) H_excitation(ph)
+#   define HX_flipback(ph) H_flipback(ph)
+#   define HX_refocussing(ph) H_refocussing(ph)
+#   define HX_refocussing_raw(ph) H_refocussing_raw(ph)
+#   define HX_inversion(ph) H_inversion(ph)
+#   define HX_exc_UR(ph) H_exc_UR(ph)
+#   define HX_fb_UR(ph) H_fb_UR(ph)
+#   define HX_WATERGATE(ph) H_WATERGATE(ph)
+    "eHX_WATERGATE = eH_WATERGATE"
+    "pHX_refocussing = pH_refocussing"
+    "pHX_inversion = pH_inversion"
+    "pHX_exc_UR = pH_exc_UR"
+    "eHX_excitation = eH_excitation"
+    "eHX_refocussing = eH_refocussing"
+    "eHX_exc_UR = eH_exc_UR"
+    "eHX_fb_UR = eH_fb_UR"
+# endif
+
+;cnst44: effective evolution multiplier for HC_excitation.
+;cnst46: effective evolution multiplier for HC_refocussing.
+;cnst47: effective evolution multiplier for HC_UR_exc.
+;cnst48: effective evolution multiplier for HC_UR_fb.
+
+;cnst54: effective evolution multiplier for C_excitation.
+;cnst56: effective evolution multiplier for C_refocussing.
+;cnst57: effective evolution multiplier for C_UR_exc.
+;cnst58: effective evolution multiplier for C_UR_fb.

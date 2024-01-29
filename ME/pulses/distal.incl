@@ -1,0 +1,176 @@
+# if defined(GRAD) && !defined(NO_DISTAL_GRAD) && !defined(DISTAL_GRAD)
+#   define DISTAL_GRAD
+# endif
+
+# ifdef DISTAL_GRAD
+#   define DISTAL_GRAD_SHORT(gpn) pGDistalS:gpn dGDistalS
+#   define DISTAL_GRAD_LONG(gpn) pGRAD:gpn dGRAD
+# else
+    "pGDistalS = 0"
+    "dGPDistalS = 0"
+#   define DISTAL_GRAD_SHORT(gpn)
+#   define DISTAL_GRAD_LONG(gpn)
+# endif
+
+define delay timeDHX
+define delay timeDXH
+
+# ifdef DISTAL_CH3
+  "timeDHX = d41"
+  "timeDXH = d42"
+# elif defined(DISTAL_CH1)
+  "timeDHX = d24"
+  "timeDXH = d24"
+# elif defined(DISTAL_Caro)
+  "timeDHX = d28"
+  "timeDXH = d29"
+# elif defined(DISTAL_N)
+  "timeDHX = d21"
+  "timeDXH = d22"
+# else
+  "timeDHX = d24"
+  "timeDXH = d25"
+# endif
+
+define delay dDY_inversion
+define delay timeDXY 
+
+/*Determine the Y frequency and  number of evolved J couplings of X:*/
+# if defined(DISTAL_N) && defined(DISTAL_Y_CO)
+#   define DISTAL_Y
+    "timeDXY = d30"
+#   define DISTAL_fqY cnst22
+#   define fDY fCO
+#   define DY_inversion(ph) CO_inversion(ph)
+    "dDY_inversion = p14"
+# elif defined(DISTAL_N) && defined(DISTAL_Y_CA)
+#   define DISTAL_Y
+    "timeDXY = d31"
+#   define DISTAL_fqY cnst21
+#   define fDY fCA
+#   define DY_inversion(ph) CA_inversion(ph)
+    "dDY_inversion = p14"
+# elif defined(DISTAL_N) && defined(DISTAL_Y_CACO)
+#   define DISTAL_Y
+    "timeDXY = d39"
+#   define DISTAL_TWIN_Y
+#   define DISTAL_fqY cnst23
+#   define fDY fC
+#   define DY_inversion(ph) C_inversion(ph)
+    "dDY_inversion = p14"
+# elif defined(DISTAL_N) && defined(DISTAL_Y_CACA)
+#   define DISTAL_Y
+    "timeDXY = d40"
+#   define DISTAL_TWIN_Y
+#   define DISTAL_fqY cnst21
+#   define fDY fCA
+#   define DY_inversion(ph) CA_inversion(ph)
+    "dDY_inversion = p14"
+# elif defined(DISTAL_Y_C)
+#   define fDY fC
+#   define DY_inversion(ph) C_inversion(ph)
+    "dDY_inversion = dC_inversion"
+# elif defined(DISTAL_Y_N)
+#   define fDY fN
+#   define DY_inversion(ph) N_inversion(ph)
+    "dDY_inversion = dN_inversion"
+# endif
+
+/*NH out-and-back TROSY experiments use TROSY for distal block. S3 is preserved until proximal block.*/
+# if defined(TROSY) && defined(DISTAL_N)
+#   define DISTAL_X_TROSY
+# endif
+
+# if defined(DISTAL_X_EVOLVED) && !defined(DISTAL_X_TROSY)
+#   if defined(DISTAL_TWIN_Y)
+#     define DISTAL_NUM_COUPLINGS 2
+#   else
+#     define DISTAL_NUM_COUPLINGS 1
+#   endif
+# else
+#   if defined(DISTAL_TWIN_Y)
+#     define DISTAL_NUM_COUPLINGS 3
+#   else
+#     define DISTAL_NUM_COUPLINGS 2
+#   endif
+# endif
+
+/*Map pulses:*/
+define delay dDX_inversion
+define delay dDX_universal
+
+define pulse pDHX_refoc
+define pulse pDX_refocussing
+
+define pulse eDHX_excitation
+
+# if defined(DISTAL_C)
+#   define fDX fC
+    "dDX_inversion = dC_inversion"
+    "dDX_universal = dC_universal"
+#   define dDX_inversion dC_inversion
+#   define DX_excitation(ph) C_excitation(ph)
+#   define DX_flipback(ph) C_flipback(ph)
+#   define DX_universal(ph) C_universal(ph)
+#   define DX_refocussing(ph) C_refocussing(ph)
+#   define DX_inversion(ph) C_inversion(ph)
+
+#   define eDX_excitation eC_excitation
+    "pDX_refocussing = pC_refocussing"
+# else /* DISTAL_N */
+#   define fDX fN
+    "dDX_inversion = dN_inversion"
+    "dDX_universal = dN_universal"
+#   define dDX_inversion dN_inversion
+#   define DX_excitation(ph) N_excitation(ph)
+#   define DX_flipback(ph) N_flipback(ph)
+#   define DX_universal(ph) N_universal(ph)
+#   define DX_refocussing(ph) N_refocussing(ph)
+#   define DX_inversion(ph) N_inversion(ph)
+
+#   define eDX_excitation eN_excitation
+    "pDX_refocussing = pN_refocussing"
+# endif
+
+define pulse pDA_inversion
+# ifdef DISTAL_A_CA
+#   define DISTAL_A
+#   define DA_inversion(ph) CA_CO_inversion(ph)
+    "pDA_inversion = p14"
+#   define fDA fCA
+# elif defined(DISTAL_A_CO)
+#   define DISTAL_A
+#   define DA_inversion(ph) CO_CA_inversion(ph)
+    "pDA_inversion = p14"
+#   define fDA fCO
+# else
+#   define fDA fH
+# endif
+
+# if defined(DISTAL_C)
+#   define DHX_excitation(ph) HC_excitation(ph)
+#   define DHX_flipback(ph) HC_flipback(ph)
+#   define DHX_refocussing(ph) HC_refocussing(ph)
+#   define DHX_refocussing_raw(ph) HC_refocussing_raw(ph)
+#   define DHX_inversion(ph) HC_inversion(ph)
+#   define DHX_universal(ph) HC_excitation(ph)
+#   define DHX_exc_UR(ph) HC_excitation(ph)
+#   define DHX_fb_UR(ph) HC_flipback(ph)
+
+    "pDHX_refoc = pHC_refocussing"
+    "eDHX_excitation = eHC_excitation"
+#   define eDHX_refocussing eHC_refocussing
+# else /* DISTAL_N or DISTAL_Caro*/
+#   define DHX_excitation(ph) H_excitation(ph)
+#   define DHX_flipback(ph) H_flipback(ph)
+#   define DHX_refocussing(ph) H_refocussing(ph)
+#   define DHX_refocussing_raw(ph) H_refocussing_raw(ph)
+#   define DHX_inversion(ph) H_inversion(ph)
+#   define DHX_universal(ph) H_excitation(ph)
+#   define DHX_exc_UR(ph) H_exc_UR(ph)
+#   define DHX_fb_UR(ph) H_fb_UR(ph)
+
+    "pDHX_refoc = pH_refocussing"
+    "eDHX_excitation = eH_excitation"
+#   define eDHX_refocussing eH_refocussing
+# endif

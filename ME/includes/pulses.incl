@@ -1,0 +1,155 @@
+; Manual set decoupling power:
+# if defined(f4N)
+  "plw16 = plw3*(p21*p21)/(pcpd4*pcpd4)"  ; Recalculate power for classic N decoupling.
+# else
+  "plw16 = plw3*(p21*p21)/(pcpd3*pcpd3)"  ; Recalculate power for classic N decoupling.
+# endif
+
+"plw12 = plw2*(p3*p3)/(pcpd2*pcpd2)"  ; Recalculate power for classic C decoupling.
+"p51 = 10*p1"
+"p52 = 10*p3"
+
+"p61 = 10*p1"
+"p62 = 10*p3"
+"p63 = 10*p21"
+
+"spw51 = plw1"
+"spw52 = plw2"
+
+"spw61 = plw1"
+"spw62 = plw2"
+"spw63 = plw3"
+
+;p1 : f1 channel -  90 degree high power pulse
+;p2 : f1 channel - 180 degree high power pulse
+;p3 : f2 channel -  90 degree high power pulse
+;p4 : f2 channel - 180 degree high power pulse
+;p21 : f3 channel - 90 degree high power pulse
+;p22 : f3 channel - 180 degree high power pulse
+
+;pl1: power for 1H  pulses
+;pl2: power for 13C pulses
+;pl3: power for 15N pulses
+;pl4: power for 2H pulses
+
+define pulse pGRAD
+"pGRAD = p16"
+define delay dGRAD
+"dGRAD = d16"
+define pulse pGProximalL
+"pGProximalL = p17"
+define delay dGProximalL
+"dGProximalL = d17"
+define pulse pGProximalS
+"pGProximalS = p18"
+define delay dGProximalS
+"dGProximalS = d18"
+define pulse pGDistalL
+"pGDistalL = p19"
+define delay dGDistalL
+"dGDistalL = d19"
+define pulse pGDistalS
+"pGDistalS = p20"
+define delay dGDistalS
+"dGDistalS = d20"
+;p16: crusher/prefocussing gradient pulse.
+;p17: Proximal long gradient pulse.
+;p18: Proximal short gradient pulse.
+;p19: Distal long gradient pulse.
+;p20: Distal short gradient pulse.
+
+
+;d16: Crusher/prefocussing gradient delay.
+;d17: Proximal long gradient delay.
+;d18: Proximal short gradient delay.
+;d19: Distal long gradient delay.
+;d20: Distal short gradient delay.
+
+; Water flipback and flipdown pulses:
+
+;p48: H2O flipback pulse
+;p49: H2O flipdown pulse
+
+;sp48: H2O flipback pulse
+;sp49: H2O flipdown pulse
+
+;p50:
+;p51: f1 channel, broadband refocussing pulse [BURBOP 20-200-900]
+;p52: f2 channel, broadband refocussing pulse [BURBOP 20-200-900]
+
+;p61: f1 channel, broadband refocussing pulse [G5]
+;p62: f2 channel, broadband refocussing pulse [G5]
+;p63: f3 channel, broadband refocussing pulse [G5]
+
+;sp50:
+;sp51: f1 channel, broadband refocussing pulse [BURBOP 20-200-900]
+;sp52: f2 channel, broadband refocussing pulse [BURBOP 20-200-900]
+;sp53: f3 channel, broadband refocussing pulse [BURBOP 20-200-900]
+;sp61: f1 channel, broadband refocussing pulse [G5]
+;sp62: f2 channel, broadband refocussing pulse [G5]
+;sp63: f3 channel, broadband refocussing pulse [G5]
+
+; Descriptions of parameters read from prosol:
+
+;p1: f1 channel -  90 degree high power pulse.
+;p2: f1 channel - 180 degree high power pulse.
+;p3: f2 channel -  90 degree high power pulse.
+;p4: f2 channel - 180 degree high power pulse.
+;p9: f2 channel - TOCSY mixing 90 degree pulselength.
+;p11: f1 channel -  90 degree shaped pulse.
+;p13: f2 channel -  90 Q5 Cali/CO.
+;p14: f2 channel - 180 Q3 Cali/CO.
+
+;p16: homospoil/gradient pulse  [1 ms]
+;p17: f1 channel - trim pulse [2.5 ms]
+
+;p21: f3 channel -  90 degree high power pulse.
+;p22: f3 channel - 180 degree high power pulse.
+
+;p32
+;p34
+;p36
+;p37
+;p38
+;p53
+;p54
+;p58
+;p59
+;plw37-63
+
+;p53: f4 channel - 90 degree high power pulse.
+
+;pcpd1: f1 channel - 90 degree pulse for decoupling sequence.
+;pcpd2: f2 channel - 90 degree pulse for decoupling sequence.
+;pcpd3: f3 channel - 90 degree pulse for decoupling sequence.
+;pcpd4: f4 channel - 90 degree pulse for decoupling sequence.
+;pcpd5: f5 channel - 90 degree pulse for decoupling sequence.
+
+
+;pl1: power for 1H  pulses.
+;pl2: power for 13C pulses.
+;pl3: power for 15N pulses.
+;pl4: power for 2H pulses.
+
+
+;pl10: f1 channel - trim pulse, 25 us equivalent maximum!
+;pl12: f2 channel - power level for CPD/BB decoupling.
+;pl16: f3 channel - power level for CPD/BB decoupling.
+;pl32: f1 channel - power level for H presat, 80 us equivalent maximum!
+
+;cpd1: decoupling according to sequence defined by cpdprg1.
+;cpd2: decoupling according to sequence defined by cpdprg2.
+;cpd3: decoupling according to sequence defined by cpdprg3.
+;cpd4: decoupling according to sequence defined by cpdprg4.
+;cpd5: decoupling according to sequence defined by cpdprg5.
+
+
+; Shaped pulses: sp1-sp42 set by Prosol.
+
+;sp1: f1 channel - shaped pulse  90 degree  (H2O on resonance).
+;sp2: f2 channel, 90 Q5 Cali/CO on resonance.
+;sp3: f2 channel, 180 Q3 Cali/CO on resonance.
+;sp5: f2 channel, 180 Q3 Cali off resonance.
+;sp6: f2 channel, 90 Q5 Cali/CO off resonance time reversed.
+;sp7: f2 channel, 180 Q3 CO with off resonance.
+;sp8: f2 channel, 90 Q5 Cali/CO on resonance time reversed.

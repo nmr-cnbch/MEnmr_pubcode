@@ -1,0 +1,207 @@
+define delay dH_inversion
+define delay dH_inversion_raw
+
+define delay dHC_inversion
+define delay dHC_inversion_raw
+
+define pulse pH_excitation
+define pulse pHC_excitation
+define pulse pH_exc_UR
+define pulse pHC_exc_UR
+define pulse pH_refocussing
+define pulse pHC_refocussing
+define pulse pH_inversion
+define pulse pHC_inversion
+define pulse eH_excitation
+define pulse eHC_excitation
+define pulse eH_refocussing
+define pulse eHC_refocussing
+define pulse eH_exc_UR
+define pulse eHC_exc_UR
+define pulse eH_fb_UR
+define pulse eHC_fb_UR
+define pulse eH_WATERGATE
+define pulse eHC_WATERGATE
+
+define pulse pH2O_exc_Z
+
+# if defined(H_SHAPED)
+;cnst40: excitation width of HC refocussing pulses [ppm].
+;cnst41: excitation width of HC excitation/flipback pulses [ppm].
+;cnst42: chemical shift of HC protons [ppm].
+;cnst43: rotation angle for HC pc9 pulse [0-90 deg]
+
+;cnst50: excitation width of HN/HCaro refocussing pulses [ppm].
+;cnst51: excitation width of HN/HCaro excitation/flipback pulses [ppm].
+;cnst52: chemical shift of HN/HCaro protons [ppm].
+;cnst53: rotation angle for HN/HCaro pc9 pulse [0-90 deg]
+# endif
+
+; H pulses act on > 4.7 and HC pulses on 4.7 > with H2O unaffected.
+
+define pulse pH2O_excitation
+define pulse pH2O_flipback
+
+# ifdef WATER_FLIPBACK
+#   define H2O_excitation(ph) p11:sp1 ph
+#   define H2O_flipback(ph) H2O_excitation(ph)
+#   define H2O_excitation_Z(ph)
+#   define H2O_flipback_Z(ph)
+#   define H2O_EXCITATION(ph) (H2O_excitation(ph)):fH
+#   define H2O_FLIPBACK(ph) (H2O_flipback(ph)):fH
+#   define H2O_EXCITATION_Z(ph)
+#   define H2O_FLIPBACK_Z(ph)
+    "pH2O_excitation = p11"
+    "pH2O_flipback = p11"
+    "pH2O_exc_Z = 0"
+#   define pH2O_FLIPBACK_Z 0u
+# elif defined(WATER_Z)
+#   define H2O_excitation(ph)
+#   define H2O_flipback(ph)
+#   define H2O_excitation_Z(ph) p11:sp1 ph
+#   define H2O_flipback_Z(ph) H2O_excitation_Z(ph)
+#   define H2O_EXCITATION(ph)
+#   define H2O_FLIPBACK(ph)
+#   define H2O_EXCITATION_Z(ph) (H2O_excitation_Z(ph)):fH
+#   define H2O_FLIPBACK_Z(ph) (H2O_flipback_Z(ph)):fH
+    "pH2O_exc_Z = p11"
+#   define pH2O_FLIPBACK_Z p11
+    "pH2O_excitation = 0"
+    "pH2O_flipback = 0"
+# else
+#   define H2O_excitation(ph)
+#   define H2O_flipback(ph)
+#   define H2O_excitation_Z(ph)
+#   define H2O_flipback_Z(ph)
+#   define H2O_EXCITATION(ph)
+#   define H2O_FLIPBACK(ph)
+#   define H2O_EXCITATION_Z(ph)
+#   define H2O_FLIPBACK_Z(ph)
+    "pH2O_excitation = 0u"
+    "pH2O_flipback = 0u"
+    "pH2O_exc_Z = 0u"
+# define pH2O_FLIPBACK_Z 0u
+    "p11 = 0u"
+# endif
+
+# if defined(H_SHAPED)
+    "d46 = 0u"
+    "d56 = 0u"
+    "pHC_excitation = p44"
+    "pHC_exc_UR = p47"
+#   define HC_excitation(ph) p44:sp44 ph
+#   define HC_flipback(ph) p45:sp45 ph
+#   define HC_refocussing_raw(ph) p46:sp46 ph
+#   define HC_refocussing(ph) d46 p46:sp46 ph
+#   define HC_inversion(ph) HC_refocussing(ph)
+#   define HC_exc_UR(ph) p47:sp47 ph
+#   define HC_fb_UR(ph) p48:sp48 ph
+    "pHC_inversion = p46"
+    "d46 = p46*cnst46/2"
+    "eHC_refocussing = p46*cnst46 + d46"
+    "eHC_excitation = p44*cnst44"
+    "eHC_exc_UR = p47*cnst47"
+    "eHC_fb_UR = p47*cnst48"
+    "pHC_refocussing = p46 + d46"
+    "pH_excitation = p54"
+    "pH_exc_UR = p57"
+#   define H_excitation(ph) p54:sp54 ph
+#   define H_flipback(ph) p55:sp55 ph
+#   define H_refocussing_raw(ph) p56:sp56 ph
+#   define H_refocussing(ph) p56:sp56 ph d56
+#   define H_inversion(ph) H_refocussing(ph)
+#   define H_exc_UR(ph) p57:sp57 ph
+#   define H_fb_UR(ph) p58:sp58 ph
+    "pH_inversion = p56"
+    "d56 = 0u"
+    "eH_excitation = p54*cnst54"
+    "eH_refocussing = p56*cnst56"
+
+    "eH_exc_UR = p57*cnst57"
+
+    "eH_fb_UR = p57*cnst58"
+    "pH_refocussing = p56"
+    "dH_inversion = p56+d56"
+    "dH_inversion_raw = p56"
+
+    "spoff44 = bf1*(cnst42/1000000) - o1"
+    "spoff45 = bf1*(cnst42/1000000) - o1"
+    "spoff46 = bf1*(cnst42/1000000) - o1"
+    "spoff47 = bf1*(cnst42/1000000) - o1"
+    "spoff48 = bf1*(cnst42/1000000) - o1"
+    "spoal44 = 0"
+    "spoal45 = 1"
+    "spoal46 = 0.5"
+    "spoal47 = 0"
+    "spoal48 = 1"
+
+    "spoff54 = bf1*(cnst52/1000000) - o1"
+    "spoff55 = bf1*(cnst52/1000000) - o1"
+    "spoff56 = bf1*(cnst52/1000000) - o1"
+    "spoff57 = bf1*(cnst52/1000000) - o1"
+    "spoff58 = bf1*(cnst52/1000000) - o1"
+    "spoal54 = 0"
+    "spoal55 = 1"
+    "spoal56 = 0.5"
+    "spoal57 = 0"
+    "spoal58 = 1"
+
+#   define H_WATERGATE(ph) H_refocussing(ph)
+#   define HC_WATERGATE(ph) HC_refocussing(ph)
+    "eH_WATERGATE = eH_refocussing"
+    "eHC_WATERGATE = eHC_refocussing"
+
+# else /* Hard pulses */
+#   define HC_excitation(ph) H_excitation(ph)
+#   define HC_flipback(ph) H_flipback(ph)
+#   define HC_refocussing(ph) H_refocussing(ph)
+#   define HC_refocussing_raw(ph) H_refocussing_raw(ph)
+#   define HC_inversion(ph) H_inversion(ph)
+#   define HC_exc_UR(ph) H_exc_UR(ph)
+#   define HC_fb_UR(ph) H_fb_UR(ph)
+    "pH_inversion = p2"
+    "eHC_refocussing = 0"
+
+    "pHC_exc_UR = p1"
+    "d46 = 0"
+    "eH_excitation = p1*2/PI"
+    "eH_refocussing = 0"
+    "eH_exc_UR = p1*2/PI"
+    "eH_fb_UR = p1*2/PI"
+    "pH_refocussing = p2"
+    "pH_exc_UR = p1"
+    "p46 = p2"
+    "p45 = p1"
+#   define H_excitation(ph) p1 ph pl1
+#   define H_flipback(ph) p1 ph pl1
+#   define H_refocussing(ph) p2 ph pl1
+#   define H_refocussing_raw(ph) p2 ph pl1
+#   define H_inversion(ph) H_refocussing(ph)
+#   define H_exc_UR(ph) p1 ph pl1
+#   define H_fb_UR(ph) p1 ph pl1
+    "pHC_inversion = p2"
+    "eHC_excitation = p1*2/PI"
+    "pHC_refocussing = p2"
+    "eHC_exc_UR = p1*2/PI"
+    "eHC_fb_UR = p1*2/PI"
+    "d56 = 0"
+    "p55 = p1"
+    "p56 = p2"
+    "pH_inversion = p2"
+    "dH_inversion = p2"
+    "dH_inversion_raw = p2"
+#   ifdef W5
+#     include <ME/includes/W5.incl>
+    "eH_WATERGATE = cnst59*W5D"
+    "eHC_WATERGATE = cnst49*W5D"
+#     define H_WATERGATE(ph) W5(ph)
+#     define HC_WATERGATE(ph) W5(ph)
+;cnst49: evolution quotient during HC WATERGATE
+;cnst59: evolution quotient during H WATERGATE
+#   else
+#     define H_WATERGATE(ph) H_refocussing(ph)
+#     define HC_WATERGATE(ph) HC_refocussing(ph)
+      "eH_WATERGATE = p2"
+      "eHC_WATERGATE = p2"
+#   endif
+# endif

@@ -1,0 +1,36 @@
+define pulse pN_inversion
+define pulse pN_refocussing
+
+define delay dN_inversion
+define delay dN_universal
+
+define pulse eN_excitation
+
+# ifdef N_SHAPED
+#    define N_refocussing(ph) p63:sp63 ph
+     "p63 = 10*p21"
+#    define pN_refocussing p63
+     "spw63 = plw3"
+     "dN_inversion = p63"
+#    define N_inversion(ph) N_refocussing(ph)
+#    define N_excitation(ph) p21 ph pl3
+#    define N_flipback(ph) p21 ph pl3
+#    define N_universal(ph) N_excitation(ph)
+#    define N_exc_UR(ph) N_excitation(ph)
+#    define N_fb_UR(ph) N_flipback(ph)
+     "dN_universal = p21"
+# else
+#    define N_excitation(ph) p21 ph pl3
+#    define N_flipback(ph) p21 ph pl3
+#    define N_universal(ph) N_excitation(ph)
+#    define N_refocussing(ph) p22 ph pl3
+#    define pN_refocussing p22
+#    define N_inversion(ph) N_refocussing(ph)
+#    define N_exc_UR(ph) N_excitation(ph)
+#    define N_fb_UR(ph) N_flipback(ph)
+     "dN_universal = p21"
+     "dN_inversion = p22"
+     "pN_inversion = p22"
+     "pN_refocussing = p22"
+     "eN_excitation = p21*2/PI"
+# endif

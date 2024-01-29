@@ -1,0 +1,85 @@
+#*******************************************************************
+#
+# A cut-down version of the prosol "triple" file.
+#
+#*******************************************************************
+#
+#avance-version (17/02/25)
+Version=3.000;
+#
+#pulses
+#
+P[1]=PW90;1                             #  90 deg pulse F1, 1H
+P[2]=PW90*2;1                           # 180 deg pulse F1, 1H
+P[3]=PW90;2                             #  90 deg pulse F2, 13C
+P[4]=PW90*2;2                           # 180 deg pulse F2, 13C
+#
+
+#
+P[11]=SHPW[5];1				# flip-back pulse, F1, 1H
+P[13]=SHPW[6];2 			# Cali sel. 90 deg, F2, 13C (Q5)
+P[14]=SHPW[8];2				# Cali sel.180 deg, F2, 13C (Q3)
+#
+P[21]=PW90;3                            #  90 deg pulse F3
+P[22]=PW90*2;3                          # 180 deg pulse F3
+#
+P[23]=PW90;4                            #  90 deg pulse F4
+P[24]=PW90*2;4                          # 180 deg pulse F4
+#
+P[41]=SHPW[14];2  			# broadband 180 deg, F2, 13C
+
+
+#decoupling pulses
+#
+PCPD[1]=SQPW[0];1			# 90 deg pulse F1, 1H, dec.
+PCPD[2]=SQPW[0];2			# 90 deg pulse F2, 13C, dec.
+PCPD[3]=SQPW[0];3			# 90 deg pulse F3, 15N, dec.
+PCPD[4]=SQPW[0];4			# 90 deg pulse F4, 2H, dec.
+#
+# power levels
+#
+#PlW[0];
+PLW[1]=PL90;1				# high power, F1, 1H
+PLW[2]=PL90;2				# high power, F2, 13C
+PLW[3]=PL90;3				# high power, F3, 15N
+PLW[4]=PL90;4				# high power, F4, 2H
+#
+PLW[10]=SQPL[1];1			# TOCSY power, F1, 1H
+PLW[12]=SQPL[0];2			# dec. power, F2, 13C
+PLW[14]=SQPL[5];2			# low power cpd, F2
+PLW[15]=SQPL[1];2			# TOCSY power, F2, 13C
+PLW[16]=SQPL[0];3			# dec. power, F3, 15N
+PLW[17]=SQPL[0];4			# dec. power, F4, 2H
+PLW[19]=SQPL[0];1			# dec. power, F1, 1H
+PLW[23]=SQPL[16];3			# CPMG power, F3, 15N (T2)
+PLW[26]=SQPL[5];3			# low power decoupling, F3, 15N
+PLW[27]=SQPL[1];3			# TOCSY power, F3, 15N
+
+PLW[32]=SQPL[12];1                      # presat power low, F1
+
+# shapes
+#
+SH[1]=SH[5];1				# flip-back pulse, F1, 1H
+SH[2]=SH[6];2				# Cali sel.  90 deg, F2, 13C
+SH[3]=SH[8];2				# Cali sel. 180 deg, F2, 13C
+SH[4]=SH[6];2				# Cali sel.  90 deg, F2, 13C off
+SH[5]=SH[8];2				# Cali sel. 180 deg, F2, 13C off
+SH[6]=SH[7];2				# Cali sel.  90 deg, F2, 13C off, tr
+SH[7]=SH[8];2				# Cali sel.  180 deg, F2, 13C off 2
+SH[8]=SH[7];2				# Cali sel.   90 deg, F2, 13C, tr
+#
+#SH[20]=SH[8];2				# Cali sel. 180 deg, F2, 13C off 3
+#
+SH[41]=SH[14];2                         # broadband 180 deg, F2, 13C
+
+
+#global
+#
+DE=DE;1
+D[16]=D_grad;1                          #
+P[16]=P_grad1;1                         #
+P[17]=P_mlev;1                          #
+P[19]=P_grad2;1                         #
+P[20]=P_mlev;2                          #
+P[28]=P_hsqc;1                          #
+#

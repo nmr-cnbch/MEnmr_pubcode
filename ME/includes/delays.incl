@@ -1,0 +1,41 @@
+;d1: relaxation delay    [1.2 s]
+;d0: effective relaxation delay
+;d3: delay for RD gradient recovery [2 us]
+
+;d9: C TOCSY mixing time [20 ms]
+;d11: delay for disk I/O    [30 ms]
+;d13: short delay  [4 usec]
+
+;d16
+;...gradients
+;d20
+
+;d21: time for H -> N evolution [5.4 ms]
+;d22: time for N -> H evolution [5.4 ms]
+;d23: time for simultaneous H -> N and N -> H evolution [5.4 ms]
+;d24: time for H -> C evolution [3.5 ms]
+;d25: time for C -> H(1/2/3) evolution, prefers CH, 1/(3JCH) [2.6 ms]
+;d26: time for C -> H(1/2/3) evolution, prefers CH2, 1/(4JCH) [1.8 ms]
+;d27: time for C -> H(1/2/3) evolution, prefers CH3, 1/(5JCH) [1.4 ms]
+;d28: time for H -> Caro evolution [3.2 ms]
+;d29: time for Caro -> H evolution [3.2 ms]
+;d30: time for N -> CO evolution [28 ms]
+;d31: time for N -> CA evolution [28 ms]
+;d32: time for CO -> CA evolution [9.1 ms]
+;d33: time for CA -> CO evolution compensated for relaxation [6.3 ms to 9.1 ms]
+;d34: time for CA -> CO evolution in constant time [9.1 ms]
+;d35: 2*time for CA -> CACB evolution or CA constant time evolution [28.6 ms]
+;d36: time for NCA -> CAN' evolution [28.6 ms or 54 ms]
+;d37: time for CA -> CACB and CB -> CBCA partial evolution 1/(4JCACB) [7.1 ms]
+;d38: time for CO -> N evolution [28 ms]
+;d39: time for N -> CO and N -> CA evolution [28 ms]
+;d40: time for N -> NCAiCAi-1 evolution [50 ms]
+;d41: time for Hm -> Cm evolution [4 ms]
+;d42: time for Ha -> C evolution in C-BIRD (1/2J) [3.5 ms]
+
+;d46: symmetrizing delay for HC_refocussing.
+
+;d50: time for C(ali)C(ali) FLOPSY16 mixing [20 ms]
+;d51: time for C(aro)C(aro) FLOPSY16 mixing [20 ms]
+
+;d56: symmetrizing delay for H_refocussing.
