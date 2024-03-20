@@ -4,14 +4,28 @@
 # endif
 
 # ifdef PROXIMAL_GRAD
-#   define PROXIMAL_GRAD_SHORT(gpn) pGProximalS:gpn dGProximalS
 #   define PROXIMAL_GRAD_LONG(gpn) pGRAD:gpn dGRAD
+# else
+#   define PROXIMAL_GRAD_LONG(gpn)
+# endif
+
+# ifdef PROXIMAL_GRAD_SHORT
+#   define PROXIMAL_GRAD_SHORT(gpn) pGProximalS:gpn dGProximalS
 # else
     "pGProximalS = 0"
     "dGProximalS = 0"
 #   define PROXIMAL_GRAD_SHORT(gpn)
-#   define PROXIMAL_GRAD_LONG(gpn)
 # endif
+
+# ifdef PROXIMAL_GS
+#   define GRAD_PROXIMAL_GS(gpnGS,gpn) GRAD_EA(gpnGS)
+#   define GRAD_PROXIMAL(gpnGS,gpn) GRAD(gpnGS)
+# elif defined(PROXIMAL_GRAD)
+#   define GRAD_PROXIMAL_GS(gpnGS,gpn) GRAD(gpn)
+#   define GRAD_PROXIMAL(gpnGS,gpn) GRAD(gpn)
+# else
+#   define GRAD_PROXIMAL_GS
+# endif /*PROXIMAL_GS*/
 
 /*For NH default to decoupling C:*/
 # if defined(PROXIMAL_N) && defined(LABEL_C) && !defined(PROXIMAL_Y_C)
@@ -216,3 +230,13 @@ define pulse pA_inversion
 ;cnst56: effective evolution multiplier for C_refocussing.
 ;cnst57: effective evolution multiplier for C_UR_exc.
 ;cnst58: effective evolution multiplier for C_UR_fb.
+
+;gpnamProximal1: SMSQ10.100
+;gpnamProximal2: SMSQ10.100
+;gpnamProximal3: SMSQ10.100
+;gpnamProximal4: SMSQ10.100
+;gpnamProximal5: SMSQ10.100
+;gpnamProximalX: SMSQ10.100
+;gpnamProximalX2: SMSQ10.100
+;gpnamProximalH: SMSQ10.100
+;gpnamProximalH2: SMSQ10.100

@@ -1,21 +1,23 @@
-prosol relations=<ME>
+prosol relations=<me>
 
 # include <Avance.incl>
 # include <Grad.incl>
 
-"in1 = inf1"
+# define DIMS 2
 
+; Variable definitions for the 2D block:
 # include <ME/includes/init.incl>
 
 1 ze
+
+; Relaxation delay:
 # include <ME/includes/start.incl>
 
+; 2D (proximal) block:
 # include <ME/includes/end.incl>
-  d11 mc #0 to 2
-    PROXIMAL_MC1
 exit
 
 # include <ME/includes/phasecycles.incl>
 
 ; Receiver phase:
-ph31 = PROXIMAL_PH31
+phRec = PROXIMAL_PH31

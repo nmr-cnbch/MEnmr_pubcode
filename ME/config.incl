@@ -31,6 +31,7 @@
 #   defined DISTAL_N DISTAL_N
 # endif
 
+/*For now Nietlispach TROSY is the only implementation and shares file with HSQC_SE:*/
 # ifdef TROSY
 #   ifndef PROXIMAL_TROSY
 #     define PROXIMAL_TROSY
@@ -40,6 +41,7 @@
 #   endif
 # endif
 
+/*ECOSY shares file with HSQC_SE:*/
 # ifdef ECOSY
 #   undef ECOSY
 #   define PROXIMAL_ECOSY
@@ -70,13 +72,14 @@
 #   define SAT_OFF
 # endif
 
-/*For proximal NH sensitivity-enhanced HSQC is the default.*/
-# if defined(PROXIMAL_HSQC) && defined(PROXIMAL_N) && !defined(PROXIMAL_NO_SE)
-#   define PROXIMAL_HSQC_SE
+# if defined NO_SE && !defined PROXIMAL_NO_SE
+#  undef NO_SE
+#  define PROXIMAL_NO_SE
 # endif
 
-# ifdef RAPID
-#   undef FB
+/*For proximal NH sensitivity-enhanced HSQC is the default.*/
+# if defined(PROXIMAL_HSQC) && defined(PROXIMAL_N) && !defined(PROXIMAL_NO_SE) && !defined(PROXIMAL_NO_SE)
+#   define PROXIMAL_HSQC_SE
 # endif
 
 # ifdef FB
@@ -96,12 +99,14 @@
 # ifdef SHAPED
 #   undef SHAPED
 #   define SHAPED SHAPED
-#   define _H_SHAPED
+#   define H_SHAPED
 # endif
 
-
-;cnst0: Correct to phc1=0 by entering cnst0=phc1. Added to last delay.
 define delay ME_de
+# if !defined(ME_DE)
+  "cnst0 = 0"
+# endif
+;cnst0: Correct to phc1=0 by entering cnst0=phc1. Added to last delay.
 # ifdef ACQ_EXPLICIT
     "ME_de = de - 2*dw*cnst0/360 + 0.1u + 1u" ; Added delays before DWL_CLK_ON.
 # else
@@ -188,12 +193,12 @@ define delay ME_de
 #   define TROSY_INV
 # endif
 
-# if defined(CPD_C)
+# if defined(CPD_C) && !defined(NO_CPD_C)
 #   define CPD_POW pl12:fC
 #   define CPD_ON cpds2:fC
 #   define CPD_ON_GO cpds2:fC finally do:fC
 #   define CPD_OFF do:fC
-# elif defined(CPD_N)
+# elif defined(CPD_N) && !defined(NO_CPD_N)
 #   define CPD_POW pl16:fN
 #   define CPD_ON cpds3:fN
 #   define CPD_ON_GO cpds3:fN finally do:fN
@@ -278,6 +283,43 @@ define delay ME_de
 # include <ME/pulses/C.incl>
 # include <ME/pulses/protein_C.incl>
 # include <ME/pulses/N.incl>
+
+/*Define evolution times TN, increments inN and maximal evolution time in last indirect dimension:*/
+define delay TPmax
+
+# if DIMS > 2
+  define delay T1
+  "T1 = 0"
+  "in1 = inf1"
+# endif
+
+# if DIMS > 3
+  define delay T2
+  "T2 = 0"
+  "in2 = inf2"
+# endif
+
+# if DIMS > 3
+  define delay T3
+  "T3 = 0"
+  "in3 = inf3"
+# endif
+
+# if DIMS > 4
+  define delay T4
+  "T4 = 0"
+  "in4 = inf4"
+# endif
+
+# if DIMS == 2
+    "TPmax = max(in1*(td1/2 - 1), 0)"
+# elif DIMS == 3
+    "TPmax = max(in2*(td2/2 - 1), 0)"
+# elif DIMS == 4
+    "TPmax = max(in3*(td3/2 - 1), 0)"
+# elif DIMS == 5
+    "TPmax = max(in4*(td4/2 - 1), 0)"
+# endif
 
 # include <ME/includes/cnsts.incl>
 # include <ME/includes/phases.incl>

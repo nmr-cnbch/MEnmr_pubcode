@@ -1,15 +1,11 @@
-prosol relations=<ME>
+prosol relations=<me>
 
 # include <Avance.incl>
 # include <Grad.incl>
 
-"in1 = inf1"
-"in2 = inf2"
-define delay T1
-"T1 = 0"
-define delay TPmax
-"TPmax = max(in2*(td2/2 - 1), 0)"
+# define DIMS 3
 
+/*Select options for distal and proximal blocks:*/
 # define XH
 # define HX
 # define DISTAL_N
@@ -19,10 +15,12 @@ define delay TPmax
 # define PROXIMAL_Y_CA
 # define PROXIMAL_A_CO
 
+; Variable definitions for the distal (H->N) and proximal (N->H) blocks:
 # include <ME/includes/init.incl>
 
 1 ze
 
+; Relaxation and distal block Hz -> NzHz -> CAzNz:
 # include <ME/includes/start.incl>
 
 ; 2CAzNz CA evolution (T1):
@@ -36,10 +34,9 @@ define delay TPmax
 
 GRAD(gpFree1)
 
+; Proximal block CAzNz -> NzHz-> H and acquisition:
 # include <ME/includes/end.incl>
-  d11 mc #0 to 2
 	  F1PH(calph(phFree1,+90), caldel(T1, +in1))
-    PROXIMAL_MC2
 exit
 
 # include <ME/includes/phasecycles.incl>
@@ -47,7 +44,7 @@ exit
 phFree1 = 0 0 0 0 2 2 2 2
 
 ; Receiver phase:
-ph31 = PROXIMAL_PH31 + DISTAL_PH31 + phFree1
+phRec = PROXIMAL_PH31 + DISTAL_PH31 + phFree1
 
 ;gpzFree1: gradient after CA echo: 21%.
 

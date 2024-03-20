@@ -15,6 +15,10 @@
 # define cnstGNH cnst10
 # define cnstGCH cnst11
 
+# define cnstCA cnst21
+# define cnstCO cnst22
+# define cnstCACO cnst23
+
 ;cnst20: offset C, 93/186 ppm.
 ;cnst21: offset CA, 55/35 ppm.
 ;cnst22: offset CO, 176.5/16 ppm.

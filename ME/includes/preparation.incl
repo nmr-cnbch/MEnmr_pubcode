@@ -1,7 +1,5 @@
 
-2 d11 SAT_ON do:f2 do:f3
-; TODO: CPD_OFF
-; Calculate recycling delay including everything outside pulses and acquisition time.
+2 d11 SAT_ON CPD_OFF
 
 ; Reset relaxation delay:
 # ifdef RECYCLING
@@ -28,7 +26,7 @@
 #   define fTOCSY f1
     1m fq=cnst21(bf ppm):fH
     (p1 pl1 ph1):fH
-#   include <DIPSI3.mjg>
+#   include <DIPSI3.pp>
     (p1 pl1 ph3):fH
     4u fq=0(sfo ppm):fH
 # endif
@@ -39,26 +37,15 @@
 #   define plTOCSY pl59
 #   define fTOCSY f2
     1m fq=cnst22(bf ppm):fX
-#   include <FLOPSY16.mjg>
+#   include <FLOPSY16.pp>
     4u fq=0(sfo ppm):fX
 # endif
 
-# if defined(PREG_END)
-   4u UNBLKGRAD
-   p16:gp0
-   d16
-   4u BLKGRAD
-   "d0 -= 4u + p16 + d16 + 4u"
-# endif
-
-# if defined(PURGE) || defined(PREG)
+# if defined(PURGE)
   "d0 -= 2m"
 # endif
 # ifdef PURGE
   "d0 -= p13*2"
-# endif
-# if defined(PREG)
-    "d0 -= p16 + d16"
 # endif
 
 # ifdef PROXIMAL_d0
@@ -96,17 +83,12 @@
     d16
 # endif
 
-# if defined(PREG) && !defined(PREG_END)
-   p16:gp0
-   d16
-# endif
-
 # ifdef CRUSH
 #   if defined(LABEL_C)
       4u fq=cnst23(bf ppm):fC
 #   endif
     (C_excitation(ph0)):fC
-#   if defined(LABEL_N)
+#   if defined(LABEL_N) && !defined(TROSY)
       (N_excitation(ph0)):fN
 #   endif
     pGRAD:gp1

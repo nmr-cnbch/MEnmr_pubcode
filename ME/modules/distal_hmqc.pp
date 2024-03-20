@@ -44,6 +44,7 @@ define delay deltaDX  ; Correction for gradient and pulses in T1.
 #   define D_SHORT_GRADIENT(gpn)
 # endif
 
+"deltaDHpre = 0"
 "deltaDHpost = 2*eDHX_excitation"
 
 define delay dDHX    ; Delay for HX J coupling back-evolution (single H only).

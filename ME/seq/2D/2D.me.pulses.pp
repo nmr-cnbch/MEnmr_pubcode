@@ -111,4 +111,4 @@ ph30 = 0
 # include <ME/modules/proximal_2D.incl>
 
 ; Receiver phase:
-ph31 = PROXIMAL_PH31
+phRec = PROXIMAL_PH31

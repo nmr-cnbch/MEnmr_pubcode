@@ -98,10 +98,6 @@ define delay timeDXY
 /*Map pulses:*/
 define delay dDX_inversion
 define delay dDX_universal
-
-define pulse pDHX_refoc
-define pulse pDX_refocussing
-
 define pulse eDHX_excitation
 
 # if defined(DISTAL_C)
@@ -116,7 +112,7 @@ define pulse eDHX_excitation
 #   define DX_inversion(ph) C_inversion(ph)
 
 #   define eDX_excitation eC_excitation
-    "pDX_refocussing = pC_refocussing"
+#   define pDX_refocussing pC_refocussing
 # else /* DISTAL_N */
 #   define fDX fN
     "dDX_inversion = dN_inversion"
@@ -129,7 +125,7 @@ define pulse eDHX_excitation
 #   define DX_inversion(ph) N_inversion(ph)
 
 #   define eDX_excitation eN_excitation
-    "pDX_refocussing = pN_refocussing"
+#   define pDX_refocussing pN_refocussing
 # endif
 
 define pulse pDA_inversion
@@ -147,6 +143,7 @@ define pulse pDA_inversion
 #   define fDA fH
 # endif
 
+define pulse pDHX_refoc
 # if defined(DISTAL_C)
 #   define DHX_excitation(ph) HC_excitation(ph)
 #   define DHX_flipback(ph) HC_flipback(ph)
@@ -158,8 +155,8 @@ define pulse pDA_inversion
 #   define DHX_fb_UR(ph) HC_flipback(ph)
 
     "pDHX_refoc = pHC_refocussing"
-    "eDHX_excitation = eHC_excitation"
 #   define eDHX_refocussing eHC_refocussing
+    "eDHX_excitation = eHC_excitation"
 # else /* DISTAL_N or DISTAL_Caro*/
 #   define DHX_excitation(ph) H_excitation(ph)
 #   define DHX_flipback(ph) H_flipback(ph)

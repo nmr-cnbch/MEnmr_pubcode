@@ -5,25 +5,7 @@ define delay TP
 
 # include <ME/blocks/se.incl>
 
-;# ifdef PROXIMAL_NO_GRAD
-;#   define PROXIMAL_T1_GRAD1
-;#   define PROXIMAL_T1_GRAD2
-;#   define PROXIMAL_XY_G
-;    "pGProximalS = 0"
-;    "dGProximalS = 0"
-;# elif defined(PROXIMAL_GS)
-;#   define PROXIMAL_T1_GRAD1 D_SHORT_GRADIENT(gpProximalH)
-;#   define PROXIMAL_T1_GRAD2 D_SHORT_GRADIENT(gpProximalH2)
-#   define PROXIMAL_XY_G (GRAD_EA(gpProximalX) TPaGRAD):fX
-;# elif !defined(PROXIMAL_EVOLVED)
-;#   define PROXIMAL_T1_GRAD1 D_LONG_GRADIENT(gpProximal1)
-;#   define PROXIMAL_T1_GRAD2 D_LONG_GRADIENT(gpProximal1)
-;#   define PROXIMAL_XY_G (0u):fH
-;# else
-;#   define PROXIMAL_T1_GRAD1 D_SHORT_GRADIENT(gpProximal2)
-;#   define PROXIMAL_T1_GRAD2 D_SHORT_GRADIENT(gpProximal2)
-;#   define PROXIMAL_XY_G (0u):fH
-;# endif
+# define PROXIMAL_XY_G (GRAD_EA(gpProximalX) TPaGRAD):fX
 
 # if defined(H_SHAPED) && !defined(PROXIMAL_H_REFOCUSSING)
 #   define PROXIMAL_H_REFOCUSSING

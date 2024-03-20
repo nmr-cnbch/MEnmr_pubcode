@@ -3,6 +3,9 @@ prosol relations=<ME>
 # include <Avance.incl>
 # include <Grad.incl>
 
+# define NOESY
+# define DIMS 4
+
 # if defined(H_SHAPED)
 ; Selective excitation pulse for H -> N:
 ;sp54:wvm: e400b(cnst51 ppm; TR)
@@ -75,26 +78,17 @@ prosol relations=<ME>
 
 # endif
 
-# include <ME/config.incl>
+# include <ME/includes/init.incl>
 
 "d0 += 0s*(cnst40 + cnst41 + cnst42)"
-
-"in1 = inf1"
-"in2 = inf2"
-"in3 = inf3"
 
 define delay mixTime
 ;d10: NOESY mixing time [40-400 ms]
 "mixTime = d10 - pGRAD - dGRAD" ; Corrected for gradient.
 
-# include <ME/modules/distal_2D.incl>
-# include <ME/modules/proximal_2D.incl>
-
 1 ze
 
-# include <ME/includes/preparation.incl>
-
-# include <ME/modules/distal_2D.incl>
+# include <ME/includes/start.incl>
 
 ; NOESY mixing:
 # ifdef MIX_LOCKED
@@ -109,27 +103,13 @@ define delay mixTime
 
   GRAD(gpNOESY)
 
-# include <ME/modules/proximal_2D.incl>
-
-# include <ME/includes/acq.incl>
-
-  d11 mc #0 to 2
-    DISTAL_MC1
-    DISTAL_MC2
-    PROXIMAL_MC3
+# include <ME/includes/end.incl>
 exit
 
-ph0 = 0
-ph1 = 1
-ph2 = 2
-ph3 = 3
-
-# define IMPORT_PHASES
-# include <ME/modules/distal_2D.incl>
-# include <ME/modules/proximal_2D.incl>
+# include <ME/includes/phasecycles.incl>
 
 ; Receiver phase:
-ph31 = PROXIMAL_PH31 + DISTAL_PH31
+phRec = PROXIMAL_PH31 + DISTAL_PH31
 
 ;gpzNOESY: gradient after NOESY: -7%.
 ;gpnamNOESY: SMSQ10.100

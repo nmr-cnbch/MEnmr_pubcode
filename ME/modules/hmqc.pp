@@ -7,9 +7,9 @@ define delay TProximal
   define delay dHX1
   define delay dHX2
 
+  "deltaX = pHX_refocussing"
   "dHX1 = timeHX - pGRAD - dGRAD - eHX_excitation - deltaX - pX_refocussing"
   "dHX2 = timeHX - pGRAD - dGRAD - ME_de"
-  "deltaX = pHX_refocussing"
 
   "acqt0 = 0"
   baseopt_echo

@@ -1,11 +1,11 @@
 # ifndef INIT_DONE
 
-; Set up chemical shift evolution times:
+; Set up chemical shift evolution time:
 define delay TProximal
 "TProximal = 0"
 
-define delay TproximalPost
-define delay dHX  ; H period.
+define delay TproximalPost	; 
+define delay dHX  ; H -> HXz period.
 define delay dHX2_1  ; Second H period - before acquisition.
 define delay dHX2_2  ; Second H period - before acquisition.
 
@@ -25,16 +25,6 @@ define delay dHX2_2  ; Second H period - before acquisition.
 /*  If there is inversion in the second INEPT leave solvent along -z after first INEPT:*/
 #   define phPROXIMAL_SOLVENT ph0
 # endif
-
-# ifdef PROXIMAL_GS
-#   define GRAD_PROXIMAL_GS(gpnGS,gpn) GRAD_EA(gpnGS)
-#   define GRAD_PROXIMAL(gpnGS,gpn) GRAD(gpnGS)
-# elif defined(PROXIMAL_GRAD)
-#   define GRAD_PROXIMAL_GS(gpnGS,gpn) GRAD(gpn)
-#   define GRAD_PROXIMAL(gpnGS,gpn) GRAD(gpn)
-# else
-#   define GRAD_PROXIMAL_GS
-# endif /*PROXIMAL_GS*/
 
 ; Phase of last H excitation pulse:
 # ifdef GS
@@ -57,7 +47,7 @@ baseopt_echo
   (HX_excitation(ph0)):fH
   PROXIMAL_GRAD_LONG(gpProximal1)
   dHX
-  (center (HX_inversion(ph1)):fH (X_inversion(ph0)):fX)
+  (center (HX_refocussing(ph1)):fH (X_inversion(ph0)):fX)
   dHX
   PROXIMAL_GRAD_LONG(gpProximal1)
   (HX_flipback(ph1)):fH

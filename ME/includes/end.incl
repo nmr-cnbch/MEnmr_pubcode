@@ -1,7 +1,22 @@
 # define ME_PULSES
 
-# if defined(DISTAL_N) || defined(DISTAL_C)
+# if defined(PROXIMAL_N) || defined(PROXIMAL_C)
 #   include <ME/modules/proximal_2D.incl>
 # endif
 
 # include <ME/includes/acq.incl>
+
+  d11 mc #0 to 2
+# if defined(NOESY)
+    DISTAL_MC1
+    DISTAL_MC2
+    PROXIMAL_MC3
+# elif DIMS == 2
+      PROXIMAL_MC1
+# elif DIMS == 3
+    PROXIMAL_MC2
+# elif DIMS == 4
+    PROXIMAL_MC3
+# elif DIMS == 5
+    PROXIMAL_MC4
+# endif
